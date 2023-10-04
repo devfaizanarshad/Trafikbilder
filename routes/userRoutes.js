@@ -8,5 +8,6 @@ router.post('/logout', userController.logout);
 router.get('/listOfCustomers', userController.listOfCustomers);
 router.delete('/deleteCustomer/:id', userController.deleteCustomer);
 router.put('/changeStatus/:id', userController.changeStatus);
+router.put('/resetPassword/:id', userController.resetPassword);
 
 module.exports = router;

@@ -106,6 +106,32 @@ const CustomersList = () => {
         });
     };
 
+    const handlePasswordReset = (id) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You are about to change the customers password temporarily.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, change it!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios.put(`${process.env.REACT_APP_API_BASE_URL}/user/resetPassword/${id}`)
+                    .then((response) => {
+                        if (response.status !== 200) {
+                            Swal.fire('Error!', 'Customer reset password failed.', 'error');
+                        }
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                        Swal.fire('Error!', 'Customer deletion failed.', 'error');
+                    });
+            }
+        });
+    };
+
+
     return (
         <div className="container mt-4">
             <div className="row">
@@ -127,11 +153,12 @@ const CustomersList = () => {
                         <table className="table table-striped table-bordered">
                             <thead>
                                 <tr>
-                                    <th className="text-center" style={{ width: "16%" }}>Sr#</th>
-                                    <th className="text-center" style={{ width: "25%" }}>Name</th>
-                                    <th className="text-center" style={{ width: "25%" }}>Email</th>
-                                    <th className="text-center" style={{ width: "17%" }}>Status</th>
-                                    <th className="text-center" style={{ width: "17%" }}>Actions</th>
+                                    <th className="text-center" style={{ width: "15%" }}>Sr#</th>
+                                    <th className="text-center" style={{ width: "17%" }}>Name</th>
+                                    <th className="text-center" style={{ width: "18%" }}>Email</th>
+                                    <th className="text-center" style={{ width: "15%" }}>Status</th>
+                                    <th className="text-center" style={{ width: "15%" }}>Password</th>
+                                    <th className="text-center" style={{ width: "20%" }}>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -153,6 +180,14 @@ const CustomersList = () => {
                                                     <option value="Block">Block</option>
                                                 </select>
                                             </div>
+                                        </td>
+                                        <td className="text-center">
+                                            <button
+                                                onClick={() => handlePasswordReset(element._id)}
+                                                className="btn btn-danger btn-sm text-white mb-1"
+                                            >
+                                                Reset
+                                            </button>
                                         </td>
                                         <td className="text-center">
                                             <button

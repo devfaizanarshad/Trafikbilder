@@ -10,33 +10,40 @@ const JWT_SECRET = "SecurityInsure";
 // Signup Api //
 Router.signUp = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, confirmPassword } = req.body;
         if (name && email && password) {
-            const checkEmail = await Users.find({ email: email });
-            if (checkEmail.length > 0) {
-                res.json({ status: 400, message: "Account with this email already exist" });
-            } else {
-                // Hash the password before saving it
-                const saltRounds = 10; // You can adjust the number of salt rounds
-                const hashedPassword = await bcrypt.hash(password, saltRounds);
+            console.log("password: " + password);
+            console.log("confirmPassword: " + confirmPassword);
+            if (password === confirmPassword) {
 
-                const FreePackage = await Subscriptions.findOne({ price: 0 });
-                let freePackageId = "No Pakage";
-                if (FreePackage) {
-                    freePackageId = FreePackage._id;
-                }
-
-                const userData = new Users({
-                    name, email, password: hashedPassword, subscriptionPakage: freePackageId  // Store the hashed password
-                });
-
-                const saveUser = await userData.save();
-
-                if (saveUser) {
-                    res.json({ status: 200, message: "Signup Successfully", data: saveUser });
+                const checkEmail = await Users.find({ email: email });
+                if (checkEmail.length > 0) {
+                    res.json({ status: 400, message: "Account with this email already exist" });
                 } else {
-                    res.json({ status: 500, message: "Error occurred in signup" });
+                    // Hash the password before saving it
+                    const saltRounds = 10; // You can adjust the number of salt rounds
+                    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+                    const FreePackage = await Subscriptions.findOne({ price: 0 });
+                    let freePackageId = "No Pakage";
+                    if (FreePackage) {
+                        freePackageId = FreePackage._id;
+                    }
+
+                    const userData = new Users({
+                        name, email, password: hashedPassword, subscriptionPakage: freePackageId  // Store the hashed password
+                    });
+
+                    const saveUser = await userData.save();
+
+                    if (saveUser) {
+                        res.json({ status: 200, message: "Signup Successfully", data: saveUser });
+                    } else {
+                        res.json({ status: 500, message: "Error occurred in signup" });
+                    }
                 }
+            } else {
+                res.json({ status: 400, message: "Password and Confirm Password not match" });
             }
         } else {
             res.json({ status: 400, message: "Please Input All required Information" });
@@ -67,13 +74,15 @@ Router.login = async (req, res) => {
                         } else {
                             const zeroPricePackage = await Subscriptions.findOne({ price: 0 });
                             if (user.subscriptionPakage === "No Pakage") {
-
-                                console.log("zeroPricePackage: " + zeroPricePackage._id);
-                                user.subscriptionPakage = zeroPricePackage._id;
+                                if (zeroPricePackage) {
+                                    console.log("zeroPricePackage: " + zeroPricePackage._id);
+                                    user.subscriptionPakage = zeroPricePackage._id;
+                                }
                             }
                             else {
                                 const userPakage = user.subscriptionPakage;
                                 // Convert userPakage to ObjectId
+                                console.log("userPakage: " + userPakage);
                                 const userPakageObjectId = new mongoose.Types.ObjectId(userPakage);
                                 const findPakagePrice = await Subscriptions.findById(userPakageObjectId);
                                 console.log("findPakagePrice: " + findPakagePrice.price);
@@ -171,13 +180,39 @@ Router.listOfCustomers = async (req, res) => {
     }
 };
 
-// Change Status //
+// resetPassword //
+Router.resetPassword = async (req, res) => {
+    try {
+        const checkCustomer = await Users.findById(req.params.id);
+
+        if (checkCustomer) {
+            const password = "123456789";
+            // Hash the password before saving it
+            const saltRounds = 10; // You can adjust the number of salt rounds
+            checkCustomer.password = await bcrypt.hash(password, saltRounds);
+            checkCustomer.loginDevice = 0;
+            const updatePassword = await checkCustomer.save();
+            if (updatePassword) {
+                res.json({ status: 200, message: "Update Password" });
+            }
+            else {
+                res.json({ status: 400, message: "Not Update Password" });
+            }
+        } else {
+            res.json({ status: 400, message: "Customer not found" });
+        }
+    } catch (error) {
+        res.json({ status: 500, error: 'An error occurred while retrieving the record.' });
+    }
+};
+
+// changeStatus //
 Router.changeStatus = async (req, res) => {
     try {
         const checkCustomer = await Users.findById(req.params.id);
 
         if (checkCustomer) {
-            checkCustomer.status = req.body.status;
+
             const updateState = await checkCustomer.save();
             if (updateState.status === req.body.status) {
                 res.json({ status: 200, message: "Update Status Successfully" });

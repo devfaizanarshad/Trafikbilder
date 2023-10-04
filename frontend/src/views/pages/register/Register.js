@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, { useState } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
@@ -28,6 +29,8 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    console.log("password.value: " + password);
+    console.log("confirmPassword.value: " + confirmPassword);
 
     // Frontend validation
     if (!name || !email || !password) {
@@ -66,7 +69,7 @@ const Register = () => {
       return
     }
 
-    if (password.value !== confirmPassword.value) {
+    if (password !== confirmPassword) {
       Swal.fire({
         icon: 'error',
         title: 'Error',
@@ -80,6 +83,7 @@ const Register = () => {
       name,
       email,
       password,
+      confirmPassword
     }
 
     axios

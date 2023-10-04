@@ -165,7 +165,7 @@ const SubscriptionsList = () => {
                                 <td className="text-center">
                                     {element.categories.join(', ')}
                                 </td>
-                                <td className="text-center">${element.price}</td>
+                                <td className="text-center">SEK{element.price}</td>
                                 <td className="text-center">
                                     <Link
                                         to={`/subscription/update/${element._id}`}

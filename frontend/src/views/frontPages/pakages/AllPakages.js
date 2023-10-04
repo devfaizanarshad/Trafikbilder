@@ -131,7 +131,7 @@ const AllPakages = () => {
                                     </div>
                                     <div style={{ display: 'flex', alignItems: 'center' }} className='my-2'>
                                         <b>Price:</b>
-                                        <p className="card-text" style={{ marginLeft: "5px" }}>${element.price}/year</p>
+                                        <p className="card-text" style={{ marginLeft: "5px" }}>SEK{element.price}/year</p>
                                     </div>
                                     <div style={{ textAlign: 'center' }}>
                                         <Link

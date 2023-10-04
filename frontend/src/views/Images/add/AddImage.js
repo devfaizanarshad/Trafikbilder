@@ -23,7 +23,7 @@ import { cilTags, cilImage, cilList } from '@coreui/icons';
 
 function AddImage() {
     const [name, setName] = useState("");
-    const [tags, setTags] = useState(['Inbound']);
+    const [tags, setTags] = useState([]);
     const [selectedCategories, setSelectedCategories] = useState("");
     const [categories, setCategories] = useState([]);
     const [resizedImage, setResizedImage] = useState(null);
