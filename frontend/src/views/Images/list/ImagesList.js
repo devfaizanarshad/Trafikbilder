@@ -164,10 +164,10 @@ const ImagesList = () => {
                                     <LazyLoadImage
                                         key="img"
                                         className="rounded-1 img-fluid"
-                                        src={`${process.env.REACT_APP_API_BASE_URL}/images/${element.name}`}
+                                        src={`https://trafikbilderbucket.s3.amazonaws.com/images/${element.name}`}
                                         alt="Image related to categories"
                                         effect="blur"
-                                        placeholderSrc={`${process.env.REACT_APP_API_BASE_URL}/images/${element.name}`}
+                                        placeholderSrc={`https://trafikbilderbucket.s3.amazonaws.com/images/${element.name}`}
                                         style={{
                                             width: '85px',  // Default width for mobile
                                             height: '85px', // Default height for mobile
@@ -268,10 +268,10 @@ const ImagesList = () => {
                                 <LazyLoadImage
                                     key="img"
                                     style={{ maxWidth: '100%', maxHeight: '80vh' }}
-                                    src={`${process.env.REACT_APP_API_BASE_URL}/images/${viewImageId}`}
+                                    src={`https://trafikbilderbucket.s3.amazonaws.com/images/${viewImageId}`}
                                     alt="Viewed Image"
                                     effect="blur"
-                                    placeholderSrc={`${process.env.REACT_APP_API_BASE_URL}/images/${viewImageId}`}
+                                    placeholderSrc={`https://trafikbilderbucket.s3.amazonaws.com/images/${viewImageId}`}
                                 />
                             </div>
                         </div>

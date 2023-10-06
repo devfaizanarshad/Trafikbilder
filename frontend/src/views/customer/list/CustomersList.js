@@ -91,9 +91,11 @@ const CustomersList = () => {
             if (result.isConfirmed) {
                 axios.delete(`${process.env.REACT_APP_API_BASE_URL}/user/deleteCustomer/${id}`)
                     .then((response) => {
+                        
                         if (response.status === 200) {
-                            const updatedCustomers = customer.filter((element) => element._id !== id);
-                            setCustomer(updatedCustomers);
+                            // Update the subscription list without refreshing
+                            setCustomer((prevCustomers) => prevCustomers.filter((element) => element._id !== id))
+                            setfilteredCustomer((prevCustomers) => prevCustomers.filter((element) => element._id !== id));
                         } else {
                             Swal.fire('Error!', 'Customer deletion failed.', 'error');
                         }
