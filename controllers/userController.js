@@ -56,7 +56,6 @@ Router.signUp = async (req, res) => {
 
 // login Api //
 Router.login = async (req, res) => {
-    res.set('Access-Control-Allow-Origin', '*');
     try {
         const { email, password } = req.body;
         if (email && password) {
