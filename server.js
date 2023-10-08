@@ -39,7 +39,7 @@ app.use(bodyParser.json());
 //   next();
 // });
 const corsOptions = {
-  origin:'https://trafikbilder.se',
+  origin:'https://trafikbilder.se/user/login',
   credentials: true,
 
 };
