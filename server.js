@@ -39,9 +39,11 @@ app.use(bodyParser.json());
 //   next();
 // });
 const corsOptions = {
-  origin:'https://trafikbilder.se/user/login',
+  origin: ['https://trafikbilder.se','http://34.194.116.80:3000','http://localhost:3000'],
+  methods: ['GET','HEAD','PUT','PATCH','POST','DELETE'],
+  allowedHeaders: 'Content-Type,Authorization',
   credentials: true,
-
+  optionsSuccessStatus: 204,
 };
 
 app.use(cors(corsOptions));
