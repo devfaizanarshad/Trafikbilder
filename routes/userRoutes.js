@@ -1,16 +1,7 @@
 const express = require('express');
 const userController = require('../controllers/userController');
 const router = express.Router();
-const cors = require("cors");
-const corsOptions = {
-    origin: 'https://trafikbilder.se',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    allowedHeaders: 'Content-Type,Authorization',
-    credentials: true,
-    optionsSuccessStatus: 204,
-  };
-  
-  router.use(cors(corsOptions));
+
 
 router.post('/signup', userController.signUp);
 router.post('/login', userController.login);
