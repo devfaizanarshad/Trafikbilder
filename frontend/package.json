@@ -62,6 +62,7 @@
     "sass": "^1.63.6",
     "web-vitals": "^3.3.2"
   },
+  "proxy": "https://backend.trafikbilder.se",
   "engines": {
     "node": ">=10",
     "npm": ">=6"
