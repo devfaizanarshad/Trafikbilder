@@ -26,18 +26,25 @@ db.once("open", () => {
   console.log("Connected");
 });
 
-// app.set("views", path.join(__dirname, "views"));
 app.use(express.static(__dirname + "/public"));
 
 // Parse incoming requests with urlencoded and json bodies
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+// Enable CORS for specific origin ('https://trafikbilder.se')
+const corsOptions = {
+  origin: ['https://trafikbilder.se' ],
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  allowedHeaders: 'Content-Type,Authorization',
+  credentials: true,
+  optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Enable CORS for all routes
-app.use(cors());
 
 // Run Route Files APIs
 app.use("/category", categories);
@@ -46,7 +53,6 @@ app.use("/image", images);
 app.use("/subscription", subscriptions);
 app.use("/video", videoRoutes);
 app.use("/paymentRequest", paymentRequestsRoutes);
-
 
 // Start the server
 app.listen(port, () => {
