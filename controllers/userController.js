@@ -9,7 +9,6 @@ const JWT_SECRET = "SecurityInsure";
 
 // Signup Api //
 Router.signUp = async (req, res) => {
-    res.set('Access-Control-Allow-Origin', 'https://trafikbilder.se');
     try {
         const { name, email, password, confirmPassword } = req.body;
         if (name && email && password) {
@@ -57,7 +56,7 @@ Router.signUp = async (req, res) => {
 
 // login Api //
 Router.login = async (req, res) => {
-    res.set('Access-Control-Allow-Origin', 'https://trafikbilder.se');
+    res.set('Access-Control-Allow-Origin', '*');
     try {
         const { email, password } = req.body;
         if (email && password) {
@@ -170,7 +169,6 @@ Router.logout = async (req, res) => {
 
 // List of Customers //
 Router.listOfCustomers = async (req, res) => {
-    res.set('Access-Control-Allow-Origin', 'https://trafikbilder.se');
     try {
         const customersData = await Users.find({ role: 1 });
         if (customersData) {
@@ -185,7 +183,6 @@ Router.listOfCustomers = async (req, res) => {
 
 // resetPassword //
 Router.resetPassword = async (req, res) => {
-    res.set('Access-Control-Allow-Origin', 'https://trafikbilder.se');
     try {
         const checkCustomer = await Users.findById(req.params.id);
 
@@ -212,7 +209,6 @@ Router.resetPassword = async (req, res) => {
 
 // changeStatus //
 Router.changeStatus = async (req, res) => {
-    res.set('Access-Control-Allow-Origin', 'https://trafikbilder.se');
     try {
         const checkCustomer = await Users.findById(req.params.id);
 

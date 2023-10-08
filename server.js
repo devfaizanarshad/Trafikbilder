@@ -33,12 +33,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // Enable CORS for specific origin ('https://trafikbilder.se')
+// app.use((req, res, next) => {
+//   res.header('Access-Control-Allow-Origin', '*');
+//   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+//   next();
+// });
 const corsOptions = {
-  origin: ['https://trafikbilder.se','http://34.194.116.80:3000','http://localhost:3000'],
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  allowedHeaders: 'Content-Type,Authorization',
+  origin:'https://trafikbilder.se',
   credentials: true,
-  optionsSuccessStatus: 204,
+
 };
 
 app.use(cors(corsOptions));
