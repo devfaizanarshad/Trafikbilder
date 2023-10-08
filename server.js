@@ -34,7 +34,7 @@ app.use(bodyParser.json());
 
 // Enable CORS for specific origin ('https://trafikbilder.se')
 const corsOptions = {
-  origin: ['https://trafikbilder.se' ],
+  origin: 'https://trafikbilder.se',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   allowedHeaders: 'Content-Type,Authorization',
   credentials: true,
