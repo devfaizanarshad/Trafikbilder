@@ -7,7 +7,7 @@ const Users = require('../models/Users');
 const Subscriptions = require('../models/Subscriptions');
 const JWT_SECRET = "SecurityInsure";
 const cors = require("cors");
-app.use(cors());
+Router.use(cors());
 
 // Signup Api //
 Router.signUp = async (req, res) => {
