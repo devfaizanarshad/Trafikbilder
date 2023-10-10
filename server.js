@@ -40,7 +40,7 @@ app.use(bodyParser.json());
 //   next();
 // });
 const corsOptions = {
-  origin: 'https://trafikbilder.se',
+  origin: ['https://trafikbilder.se','http://localhost:3000'],
   methods: ['GET','HEAD','PUT','PATCH','POST','DELETE'],
   allowedHeaders: 'Content-Type,Authorization',
   credentials: true,
