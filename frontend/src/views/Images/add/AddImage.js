@@ -18,12 +18,12 @@ import {
     CRow,
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
-import Resizer from 'react-image-file-resizer'; // Import the image resizer package
+import { CSpinner } from '@coreui/react';
 import { cilTags, cilImage, cilList } from '@coreui/icons';
 
 function AddImage() {
-    const [name, setName] = useState("");
     const [tags, setTags] = useState([]);
+    const [uploadProgress, setUploadProgress] = useState("");
     const [selectedCategories, setSelectedCategories] = useState("");
     const [categories, setCategories] = useState([]);
     const [resizedImage, setResizedImage] = useState(null);
@@ -131,15 +131,15 @@ function AddImage() {
         const maxWidth = 800;
         const maxHeight = 600;
         const maxSize = 300 * 1024; // 300kb in bytes
-    
+
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
         const img = new Image();
-    
+
         img.onload = () => {
             let newWidth = originalWidth;
             let newHeight = originalHeight;
-    
+
             if (file.size > maxSize) {
                 // If the image size is larger than 300kb, reduce dimensions by half
                 newWidth /= 2;
@@ -151,25 +151,25 @@ function AddImage() {
                     newHeight *= 0.9;
                 }
             }
-    
+
             newWidth = Math.round(newWidth);
             newHeight = Math.round(newHeight);
-    
+
             canvas.width = newWidth;
             canvas.height = newHeight;
-    
+
             ctx.drawImage(img, 0, 0, newWidth, newHeight);
-    
+
             const resizedDataURL = canvas.toDataURL(file.type);
             const resizedBlob = dataURLtoBlob(resizedDataURL);
-    
+
             resizedBlob.name = file.name;
-    
+
             setResizedImage(resizedBlob);
         };
-    
+
         img.src = URL.createObjectURL(file);
-    };    
+    };
 
     const dataURLtoBlob = (dataURL) => {
         const arr = dataURL.split(",");
@@ -194,7 +194,6 @@ function AddImage() {
             });
             return;
         }
-
         const formData = new FormData();
         formData.append('state', 'Approved');
         formData.append('tags', tags);
@@ -205,6 +204,9 @@ function AddImage() {
             const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/image/addImage`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
+                },
+                onUploadProgress: () => {
+                    setUploadProgress("Uploading your image");
                 },
             });
 
@@ -217,6 +219,7 @@ function AddImage() {
 
                 navigate('/image/list');
             } else {
+                setUploadProgress("");
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
@@ -231,18 +234,12 @@ function AddImage() {
                 }
             }
         } catch (error) {
+            setUploadProgress("");
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
                 text: error.response ? error.response.data.message : 'An error occurred',
             });
-
-            if (
-                error.response.status === 400 &&
-                error.response.data.message === 'This image already exists'
-            ) {
-                navigate('/image/list');
-            }
         }
     };
 
@@ -258,6 +255,26 @@ function AddImage() {
                                         <CForm onSubmit={handleSubmit} encType="multipart/form-data">
                                             <h2>Upload New Image</h2>
                                             <p className="text-small-emphasis">Upload your required image</p>
+                                            <div className="mb-3">
+                                                {uploadProgress && ( // Only show progress bar when upload is in progress
+                                                    <div className="d-flex align-items-center">
+                                                        <div className="progress">
+                                                            <div
+                                                                className="progress-bar"
+                                                                role="progressbar"
+                                                                style={{ width: '130px' }}
+                                                            >
+                                                                {uploadProgress}
+                                                            </div>
+                                                        </div>
+                                                        <CSpinner
+                                                            className="ms-2"
+                                                            variant="grow"
+                                                            size="sm"
+                                                        />
+                                                    </div>
+                                                )}
+                                            </div>
                                             <CInputGroup className="mb-3">
                                                 <CInputGroupText>
                                                     <CIcon icon={cilImage} />

@@ -18,11 +18,12 @@ import {
   CRow,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilLockLocked, cilEnvelopeOpen } from '@coreui/icons'
+import { cilLockLocked, cilEnvelopeOpen, cilEyedropper } from '@coreui/icons'
 
 const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate()
 
   const handleSubmit = (e) => {
@@ -70,7 +71,8 @@ const Login = () => {
           // console.log('Role: ' + response.data.data.role)
           if (response.data.data.role === 0) {
             // console.log('Role: ' + response.data.data.role)
-            navigate('/dashboard')
+            // navigate('/dashboard')
+            window.location.href = "/dashboard";
           }
           if (response.data.data.role === 1) {
             navigate('/')
@@ -115,6 +117,7 @@ const Login = () => {
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="Email"
                         autoComplete="Email"
+                        style={{ flex: 1 }} // Add this style to make the input field fill available space
                       />
                     </CInputGroup>
                     <CInputGroup className="mb-4">
@@ -122,14 +125,21 @@ const Login = () => {
                         <CIcon icon={cilLockLocked} />
                       </CInputGroupText>
                       <CFormInput
-                        type="password"
+                        type={showPassword ? 'text' : 'password'} // Toggle between 'text' and 'password'
                         id="password"
                         name="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Password"
                         autoComplete="current-password"
+                        style={{ flex: 1 }} // Add this style to make the input field fill available space
                       />
+                      <CInputGroupText
+                        onClick={() => setShowPassword(!showPassword)} // Toggle showPassword state
+                        style={{ cursor: 'pointer' }}
+                      >
+                        <CIcon icon={showPassword ? cilEyedropper : cilEyedropper} />
+                      </CInputGroupText>
                     </CInputGroup>
                     <CRow>
                       <CCol xs={12} sm={6}>

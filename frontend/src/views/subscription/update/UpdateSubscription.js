@@ -16,8 +16,7 @@ import {
     CFormInput,
     CInputGroup,
     CInputGroupText,
-    CRow,
-    CSelect, // Import CSelect for categories
+    CRow
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
 import { cilList, cilDescription, cilMoney, cilShareBoxed } from '@coreui/icons';
@@ -166,6 +165,16 @@ const UpdateSubscription = () => {
                                                     onChange={(e) => setPrice(e.target.value)}
                                                     placeholder="Pakage Price"
                                                     autoComplete="price"
+                                                />
+                                            </CInputGroup>
+                                            <CInputGroup className="mb-4">
+                                                <CInputGroupText>Selected Categories</CInputGroupText>
+                                                <TagsInput
+                                                    name="categories"
+                                                    value={categories}
+                                                    onChange={(newTags) => setCategories(newTags)}
+                                                    disabled // Disable the input
+                                                // Remove the placeholder and autoComplete props
                                                 />
                                             </CInputGroup>
                                             <CInputGroup className="mb-3">

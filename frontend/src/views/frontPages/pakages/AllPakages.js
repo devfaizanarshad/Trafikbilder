@@ -5,13 +5,10 @@ import axios from 'axios';
 import CIcon from '@coreui/icons-react';
 import { cilArrowLeft, cilArrowRight } from '@coreui/icons';
 import Swal from 'sweetalert2';
-import { useNavigate } from 'react-router-dom';
 
 const AllPakages = () => {
     const [subscriptions, setsubscriptions] = useState([]);
-    const [currentPage, setCurrentPage] = useState(0); // Current page number
     const [filteredsubscription, setfilteredsubscription] = useState([]); // Initialize with an empty array
-    const navigate = useNavigate();
 
     // Fetch subscriptions when the component mounts
     const fetchsubscriptions = async () => {

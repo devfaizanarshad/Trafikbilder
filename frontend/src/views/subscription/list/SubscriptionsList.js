@@ -8,7 +8,6 @@ import ReactPaginate from 'react-paginate';
 
 const SubscriptionsList = () => {
     const [subscriptions, setsubscriptions] = useState([]);
-    const [showFullDescription, setShowFullDescription] = useState(false);
     const [currentPage, setCurrentPage] = useState(0); // Current page number
     const [filteredsubscription, setfilteredsubscription] = useState([]); // Initialize with an empty array
     const perPage = 5; // Number of items per page
@@ -19,7 +18,7 @@ const SubscriptionsList = () => {
             const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/subscription/listOfPakages`);
             if (Array.isArray(response.data.data)) {
                 // Initialize the showDetails property to false for each package
-                const packagesWithDetails = response.data.data.map(pkg => ({
+                response.data.data.map(pkg => ({
                     ...pkg,
                     showDetails: false,
                 }));

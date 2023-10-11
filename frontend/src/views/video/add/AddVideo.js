@@ -18,14 +18,15 @@ import {
     CRow,
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
+import { CSpinner } from '@coreui/react';
 import { cilTags, cilMovie, cilList } from '@coreui/icons';
 
 function AddVideo() {
-    const [name, setName] = useState("");
-    const [tags, setTags] = useState(['Inbound']);
+    const [tags, setTags] = useState([]);
     const [selectedCategories, setSelectedCategories] = useState("");
     const [categories, setCategories] = useState([]);
     const [selectedVideo, setSelectedVideo] = useState(null);
+    const [uploadProgress, setUploadProgress] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -54,20 +55,16 @@ function AddVideo() {
             return;
         }
 
-        // Create a video element to get the duration
         const videoElement = document.createElement('video');
         videoElement.preload = 'metadata';
         videoElement.src = URL.createObjectURL(selectedVideo);
 
-        // Wait for video metadata to load
         videoElement.addEventListener('loadedmetadata', async () => {
-            // Check video duration (less than 15 seconds)
-            console.log("videoElement.duration: " + videoElement.duration);
             if (videoElement.duration > 17) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: 'Video duration must upto 15 seconds.',
+                    text: 'Video duration must be up to 15 seconds.',
                 });
                 return;
             }
@@ -76,17 +73,21 @@ function AddVideo() {
             formData.append('state', 'Approved');
             formData.append('tags', tags);
             formData.append('categories', selectedCategories);
-            // formData.append('name', resizedVideo, selectedFile.name);
             formData.append('name', selectedVideo, selectedVideo.name);
-            // formData.append('video', selectedVideo);
-
 
             try {
-                const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/video/addVideo`, formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                });
+                const response = await axios.post(
+                    `${process.env.REACT_APP_API_BASE_URL}/video/addVideo`,
+                    formData,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                        onUploadProgress: () => {
+                            setUploadProgress("Uploading your video");
+                        },
+                    }
+                );
 
                 if (response.data.status === 200) {
                     Swal.fire({
@@ -97,6 +98,7 @@ function AddVideo() {
 
                     navigate('/video/list');
                 } else {
+                    setUploadProgress("");
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
@@ -111,22 +113,15 @@ function AddVideo() {
                     }
                 }
             } catch (error) {
+                setUploadProgress("");
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
                     text: error.response ? error.response.data.message : 'An error occurred',
                 });
-
-                if (
-                    error.response.status === 400 &&
-                    error.response.data.message === 'This video already exists'
-                ) {
-                    navigate('/video/list');
-                }
             }
         });
 
-        // Handle any errors that may occur during video metadata loading
         videoElement.addEventListener('error', () => {
             Swal.fire({
                 icon: 'error',
@@ -135,89 +130,8 @@ function AddVideo() {
             });
         });
 
-        // Start loading video metadata
         videoElement.load();
     };
-
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-
-    //     e.preventDefault();
-
-    //     if (!selectedVideo) {
-    //         Swal.fire({
-    //             icon: 'error',
-    //             title: 'Error',
-    //             text: 'Please select a video file to upload.',
-    //         });
-    //         return;
-    //     }
-
-    //     console.log("selectedVideo.duration: " + selectedVideo.duration);
-
-    //     // Check video duration (less than 20 seconds)
-    //     if (selectedVideo.duration > 5) {
-    //         Swal.fire({
-    //             icon: 'error',
-    //             title: 'Error',
-    //             text: 'Video duration must be less than 20 seconds.',
-    //         });
-    //         return;
-    //     }
-
-    //     const formData = new FormData();
-    //     formData.append('state', 'Approved');
-    //     formData.append('tags', tags);
-    //     formData.append('categories', selectedCategories);
-    //     // formData.append('name', resizedVideo, selectedFile.name);
-    //     formData.append('name', selectedVideo, selectedVideo.name);
-    //     // formData.append('video', selectedVideo);
-
-
-    //     try {
-    //         const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/video/addVideo`, formData, {
-    //             headers: {
-    //                 'Content-Type': 'multipart/form-data',
-    //             },
-    //         });
-
-    //         if (response.data.status === 200) {
-    //             Swal.fire({
-    //                 icon: 'success',
-    //                 title: 'Success',
-    //                 text: response.data.message,
-    //             });
-
-    //             navigate('/video/list');
-    //         } else {
-    //             Swal.fire({
-    //                 icon: 'error',
-    //                 title: 'Error',
-    //                 text: response.data.message,
-    //             });
-
-    //             if (
-    //                 response.data.status === 400 &&
-    //                 response.data.message === 'This video already exists'
-    //             ) {
-    //                 navigate('/video/list');
-    //             }
-    //         }
-    //     } catch (error) {
-    //         Swal.fire({
-    //             icon: 'error',
-    //             title: 'Error',
-    //             text: error.response ? error.response.data.message : 'An error occurred',
-    //         });
-
-    //         if (
-    //             error.response.status === 400 &&
-    //             error.response.data.message === 'This video already exists'
-    //         ) {
-    //             navigate('/video/list');
-    //         }
-    //     }
-    // };
 
     return (
         <>
@@ -231,6 +145,26 @@ function AddVideo() {
                                         <CForm onSubmit={handleSubmit} encType="multipart/form-data">
                                             <h2>Upload New Video</h2>
                                             <p className="text-small-emphasis">Upload your video (max 15 seconds)</p>
+                                            <div className="mb-3">
+                                                {uploadProgress && (
+                                                    <div className="d-flex align-items-center">
+                                                        <div className="progress">
+                                                            <div
+                                                                className="progress-bar"
+                                                                role="progressbar"
+                                                                style={{ width: '130px' }}
+                                                            >
+                                                                {uploadProgress}
+                                                            </div>
+                                                        </div>
+                                                        <CSpinner
+                                                            className="ms-2"
+                                                            variant="grow"
+                                                            size="sm" // Adjust the size as needed
+                                                        />
+                                                    </div>
+                                                )}
+                                            </div>
                                             <CInputGroup className="mb-3">
                                                 <CInputGroupText>
                                                     <CIcon icon={cilMovie} />
@@ -269,9 +203,17 @@ function AddVideo() {
                                             <CInputGroup className="mb-3">
                                                 <select
                                                     className="form-select"
-                                                    onChange={(e) => setSelectedCategories(Array.from(e.target.selectedOptions, (option) => option.value))}
+                                                    onChange={(e) =>
+                                                        setSelectedCategories(
+                                                            Array.from(e.target.selectedOptions, (option) => option.value)
+                                                        )
+                                                    }
                                                     multiple
-                                                    style={{ height: '200px', minHeight: '120px', padding: '5px' }}
+                                                    style={{
+                                                        height: '200px',
+                                                        minHeight: '120px',
+                                                        padding: '5px',
+                                                    }}
                                                     required
                                                 >
                                                     <optgroup>
@@ -283,22 +225,18 @@ function AddVideo() {
                                                     </optgroup>
                                                 </select>
                                             </CInputGroup>
-                                            <CRow>
-                                                <CCol xs={12} sm={6}>
-                                                    <CButton
-                                                        className="w-100"
-                                                        type="submit"
-                                                        style={{
-                                                            color: '#fff',
-                                                            backgroundColor: '#D4AF37',
-                                                            border: 'none',
-                                                            fontWeight: 'bold',
-                                                        }}
-                                                    >
-                                                        Upload Video
-                                                    </CButton>
-                                                </CCol>
-                                            </CRow>
+                                            <CButton
+                                                className="w-100"
+                                                type="submit"
+                                                style={{
+                                                    color: '#fff',
+                                                    backgroundColor: '#D4AF37',
+                                                    border: 'none',
+                                                    fontWeight: 'bold',
+                                                }}
+                                            >
+                                                Upload Video
+                                            </CButton>
                                         </CForm>
                                     </CCardBody>
                                 </CCard>

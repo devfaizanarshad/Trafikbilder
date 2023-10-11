@@ -1,6 +1,5 @@
 /* eslint-disable prettier/prettier */
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import ReactPaginate from 'react-paginate';
@@ -8,7 +7,6 @@ import ReactPaginate from 'react-paginate';
 const AllPaymentRequests = () => {
     const [pakages, setPakages] = useState([]);
     const [currentPage, setCurrentPage] = useState(0); // Current page number
-    const [viewpaymentRequestId, setViewpaymentRequestId] = useState(null); // Track the ID of the paymentRequest to view
     const [filteredPakage, setfilteredPakage] = useState([]); // Initialize with an empty array
     const perPage = 5; // Number of items per page
 

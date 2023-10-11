@@ -6,7 +6,6 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import {
     CButton,
-    CFormTextarea,
     CCard,
     CCardBody,
     CCardGroup,
@@ -16,11 +15,10 @@ import {
     CFormInput,
     CInputGroup,
     CInputGroupText,
-    CRow,
-    CSelect, // Import CSelect for categories
+    CRow
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
-import { cilList, cilDescription } from '@coreui/icons';
+import { cilList } from '@coreui/icons';
 
 const UpdateVideo = () => {
     const { id } = useParams();
@@ -117,8 +115,8 @@ const UpdateVideo = () => {
                                                 <video
                                                     controls
                                                     style={{ maxWidth: '100%', maxHeight: '80vh' }} // Set max width and height
-                                                    src={`${process.env.REACT_APP_API_BASE_URL}/videos/compress/${video}`}
-                                                    alt="Viewed Video"
+                                                    src={`https://trafikbilderbucket.s3.amazonaws.com/videos/${video}`}
+                                                    alt="Video About the Selected Categories"
                                                 >
                                                     Your browser does not support the video tag.
                                                 </video>

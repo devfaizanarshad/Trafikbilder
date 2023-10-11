@@ -62,75 +62,78 @@ Router.login = async (req, res) => {
             const user = await Users.findOne({ email: email });
             if (user) {
                 const userStatus = await Users.findOne({ email: email, status: "Verify" });
-
                 if (userStatus) {
                     // Compare the provided password with the stored hashed password
                     const passwordMatch = await bcrypt.compare(password, user.password);
                     // console.log("subscriptionPakage: " + user.subscriptionPakage);
                     if (passwordMatch) {
                         const userLoginDevices = await Users.findOne({ email: email, loginDevice: 1 });
-                        if (userLoginDevices) {
-                            res.json({ status: 400, message: "Please logout from other device to login here.", data: user });
-                        } else {
-                            const zeroPricePackage = await Subscriptions.findOne({ price: 0 });
-                            if (user.subscriptionPakage === "No Pakage") {
-                                if (zeroPricePackage) {
-                                    console.log("zeroPricePackage: " + zeroPricePackage._id);
-                                    user.subscriptionPakage = zeroPricePackage._id;
-                                }
-                            }
-                            else {
-                                const userPakage = user.subscriptionPakage;
-                                // Convert userPakage to ObjectId
-                                console.log("userPakage: " + userPakage);
-                                const userPakageObjectId = new mongoose.Types.ObjectId(userPakage);
-                                const findPakagePrice = await Subscriptions.findById(userPakageObjectId);
-                                console.log("findPakagePrice: " + findPakagePrice.price);
-                                if (findPakagePrice.price !== 0) {
-                                    console.log("Price not equal to Zero");
-                                    // Check the Pakage allocation date with the current date
-                                    const createdDate = new Date(user.pakageAllocationDate);
-                                    const currentDate = new Date();
-
-                                    // Calculate the difference in milliseconds
-                                    const timeDifference = currentDate.getTime() - createdDate.getTime();
-
-                                    // Calculate the number of milliseconds in a year
-                                    const millisecondsInOneYear = 365 * 24 * 60 * 60 * 1000;
-
-                                    // Compare if one year has passed
-                                    if (timeDifference >= millisecondsInOneYear) {
-                                        console.log("One year has passed.");
+                        if (user.role !== 0) {
+                            if (userLoginDevices) {
+                                res.json({ status: 400, message: "Please logout from other device to login here.", data: user });
+                            } else {
+                                console.log("1");
+                                const zeroPricePackage = await Subscriptions.findOne({ price: 0 });
+                                console.log("zeroPricePackage: " + zeroPricePackage);
+                                if (user.subscriptionPakage === "No Pakage") {
+                                    if (zeroPricePackage) {
                                         console.log("zeroPricePackage: " + zeroPricePackage._id);
-                                        console.log("user: " + user._id);
-                                        const updatePakage = await Users.findByIdAndUpdate(
-                                            { _id: user._id },
-                                            {
-                                                $set: {
-                                                    subscriptionPakage: zeroPricePackage._id,
-                                                    pakageAllocationDate: Date.now() // Add the current date
-                                                }
-                                            },
-                                            { new: true } // Make sure to use { new: true } to get the updated document
-                                        );
-                                        console.log("updatePakage: " + updatePakage);
-                                    } else {
-                                        console.log("Less than one year has passed.");
+                                        user.subscriptionPakage = zeroPricePackage._id;
                                     }
                                 }
-                            }
+                                else {
+                                    const userPakage = user.subscriptionPakage;
+                                    // Convert userPakage to ObjectId
+                                    console.log("userPakage: " + userPakage);
+                                    const userPakageObjectId = new mongoose.Types.ObjectId(userPakage);
+                                    const findPakagePrice = await Subscriptions.findById(userPakageObjectId);
+                                    console.log("findPakagePrice: " + findPakagePrice.price);
+                                    if (findPakagePrice.price !== 0) {
+                                        console.log("Price not equal to Zero");
+                                        // Check the Pakage allocation date with the current date
+                                        const createdDate = new Date(user.pakageAllocationDate);
+                                        const currentDate = new Date();
 
-                            user.loginDevice = 1;
-                            await user.save();
-                            const token = jwt.sign(
-                                {
-                                    id: user._id,
-                                },
-                                JWT_SECRET,
-                                { expiresIn: '24h' }
-                            );
-                            res.json({ status: 200, message: "Login Successful", data: user, token: token });
+                                        // Calculate the difference in milliseconds
+                                        const timeDifference = currentDate.getTime() - createdDate.getTime();
+
+                                        // Calculate the number of milliseconds in a year
+                                        const millisecondsInOneYear = 365 * 24 * 60 * 60 * 1000;
+
+                                        // Compare if one year has passed
+                                        if (timeDifference >= millisecondsInOneYear) {
+                                            console.log("One year has passed.");
+                                            console.log("zeroPricePackage: " + zeroPricePackage._id);
+                                            console.log("user: " + user._id);
+                                            const updatePakage = await Users.findByIdAndUpdate(
+                                                { _id: user._id },
+                                                {
+                                                    $set: {
+                                                        subscriptionPakage: zeroPricePackage._id,
+                                                        pakageAllocationDate: Date.now() // Add the current date
+                                                    }
+                                                },
+                                                { new: true } // Make sure to use { new: true } to get the updated document
+                                            );
+                                            console.log("updatePakage: " + updatePakage);
+                                        } else {
+                                            console.log("Less than one year has passed.");
+                                        }
+                                    }
+                                }
+
+                                user.loginDevice = 1;
+                                await user.save();
+                            }
                         }
+                        const token = jwt.sign(
+                            {
+                                id: user._id,
+                            },
+                            JWT_SECRET,
+                            { expiresIn: '24h' }
+                        );
+                        res.json({ status: 200, message: "Login Successful", data: user, token: token });
                     } else {
                         res.json({ status: 400, message: "Password Not Match." });
                     }

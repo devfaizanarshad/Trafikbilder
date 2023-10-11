@@ -63,67 +63,9 @@ function compressVideo(inputPath, outputPath) {
     });
 }
 
-// Router.addVideo = async (req, res) => {
-//     try {
-//         const { state, tags, categories } = req.body;
-//         const categoryNames = categories.split(","); // Split category names into an array
-
-//         // Find category IDs based on category names
-//         const categoryIds = await Categories.find({ name: { $in: categoryNames } }).select('_id');
-
-//         // Extract _id values and create an array
-//         const categoryIdsArray = categoryIds.map(category => category._id);
-
-//         const tagsArray = tags.split(",");
-//         if (req.file.filename) {
-//             const checkVideo = await Videos.findOne({ name: req.file.filename })
-//             if (checkVideo) {
-//                 res.json({ status: 400, message: 'This Video already exist' });
-//             } else {
-//                 // Define input and output paths for video compression
-//                 const inputVideoPath = path.join(__dirname, '../public/videos', req.file.filename);
-//                 const compressedVideoPath = path.join(__dirname, '../public/videos/compress', req.file.filename);
-//                 // Compress the video
-//                 await compressVideo(inputVideoPath, compressedVideoPath);
-
-//                 // Upload the compressed video to S3
-//                 const s3Params = {
-//                     Bucket: 'trafikbilderbucket', // Replace with your S3 bucket name
-//                     Key: `videos/${req.file.filename}`, // Specify the path and filename in S3
-//                     Body: fs.readFileSync(compressedVideoPath), // Read the compressed video file
-//                     ACL: 'public-read', // Optional: Set the ACL (Access Control List)
-//                 };
-
-//                 const VideoData = new Videos({
-//                     name: req.file.filename,
-//                     state: state,
-//                     tags: tagsArray,
-//                     categories: categoryIdsArray
-//                 });
-
-//                 await VideoData.save();
-
-//                 const checkVideoSave = await Videos.findOne({ name: req.file.filename })
-
-//                 if (checkVideoSave) {
-//                     res.json({ status: 200, message: 'Video uploaded Successfully', data: VideoData });
-
-//                 } else {
-//                     res.json({ status: 400, message: 'Video Not Upload' });
-//                 }
-//             }
-//         }
-//         else {
-//             res.json({ status: 400, message: 'Please Fill all fields' });
-//         }
-//     } catch (error) {
-//         res.json({ status: 500, error: 'An error occurred in uploading the Video' });
-//     }
-// };
-
-
 Router.addVideo = async (req, res) => {
     try {
+        console.log("1");
         const { state, tags, categories } = req.body;
         const categoryNames = categories.split(","); // Split category names into an array
 
@@ -134,16 +76,18 @@ Router.addVideo = async (req, res) => {
         const categoryIdsArray = categoryIds.map(category => category._id);
 
         const tagsArray = tags.split(",");
-        // console.log(req.file);
         if (req.file.originalname) {
             const checkVideo = await Videos.findOne({ name: req.file.originalname })
             if (checkVideo) {
+                console.log("Video Already Exist");
                 res.json({ status: 400, message: 'This Video already exists' });
             } else {
                 // Define input and output paths for video compression
+                console.log("Video Not Exist");
                 const inputVideoPath = path.join(__dirname, '../public/videos', req.file.originalname);
                 const compressedVideoPath = path.join(__dirname, '../public/videos/compress', req.file.originalname);
-
+                console.log("inputVideoPath: " + inputVideoPath);
+                console.log("compressedVideoPath: " + compressedVideoPath);
                 // Compress the video
                 await compressVideo(inputVideoPath, compressedVideoPath);
 
@@ -155,14 +99,20 @@ Router.addVideo = async (req, res) => {
                     ACL: 'public-read', // Optional: Set the ACL (Access Control List)
                 };
 
+                console.log("s3Params: " + s3Params);
+
                 s3.upload(s3Params, async (error, s3Data) => {
                     if (error) {
+                        // Remove the locally compressed video file and original file 
+                        fs.unlinkSync(compressedVideoPath);
+                        fs.unlinkSync(inputVideoPath);
                         console.error('Error uploading video to S3:', error);
                         return res.status(500).json({ status: 500, error: 'An error occurred while uploading the video.' });
                     }
 
-                    // Remove the locally compressed video file after successful upload to S3
+                    // Remove the locally compressed video file and original file after successful upload to S3
                     fs.unlinkSync(compressedVideoPath);
+                    fs.unlinkSync(inputVideoPath);
 
                     const VideoData = new Videos({
                         name: req.file.originalname,
@@ -296,39 +246,6 @@ Router.updateVideo = async (req, res) => {
         res.json({ status: 500, error: 'An error occurred while retrieving the records.' });
     }
 };
-
-// Router.deleteVideo = async (req, res) => {
-//     try {
-//         const checkVideo = await Videos.findById(req.params.id);
-
-//         if (checkVideo) {
-//             await Videos.findByIdAndRemove(req.params.id);
-//             // Delete the Video if it exists
-//             const VideoOriginalPath = path.join(__dirname, '..', 'public', 'videos', checkVideo.name);
-//             if (fsWithoutPromises.existsSync(VideoOriginalPath)) {
-//                 fsWithoutPromises.unlinkSync(VideoOriginalPath);
-//             }
-//             const VideoCompressPath = path.join(__dirname, '..', 'public', 'videos', 'compress', checkVideo.name);
-//             if (fsWithoutPromises.existsSync(VideoCompressPath)) {
-//                 fsWithoutPromises.unlinkSync(VideoCompressPath);
-//             }
-
-//             const checkVideoDelete = await Videos.findById(req.params.id)
-
-//             if (checkVideoDelete) {
-//                 res.json({ status: 400, message: 'Video Not Deleted' });
-//             } else {
-//                 res.json({ status: 200, message: 'Video deleted Successfully' });
-//             }
-//         } else {
-//             res.json({ status: 400, message: "Video not found" });
-//         }
-//     } catch (error) {
-//         res.json({ status: 500, error: 'An error occurred while retrieving the record.' });
-//     }
-// };
-
-
 
 Router.deleteVideo = async (req, res) => {
     try {

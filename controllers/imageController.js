@@ -15,7 +15,6 @@ aws.config.update({
 });
 const s3 = new aws.S3();
 
-
 // Image
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -35,10 +34,7 @@ var upload = multer({
 Router.addImage = async (req, res) => {
     // console.log(s3Data.Location)
     try {
-
         const { originalname, buffer } = req.file;
-
-        // console.log(req.file);
 
         // Define S3 parameters for image upload
         const s3Params = {
@@ -48,7 +44,6 @@ Router.addImage = async (req, res) => {
             ACL: 'public-read', // Optional: Set the ACL (Access Control List)
         };
 
-        // console.log(s3Params);
         // Upload the image to S3
         s3.upload(s3Params, async (error, s3Data) => {
             if (error) {
@@ -207,34 +202,6 @@ Router.updateImage = async (req, res) => {
     }
 };
 
-// Router.deleteImage = async (req, res) => {
-//     try {
-//         const checkImage = await Images.findById(req.params.id);
-
-//         if (checkImage) {
-//             await Images.findByIdAndRemove(req.params.id);
-//             // Delete the image if it exists
-//             const ImagePath = path.join(__dirname, '..', 'public', 'images', checkImage.name);
-//             if (fsWithoutPromises.existsSync(ImagePath)) {
-//                 fsWithoutPromises.unlinkSync(ImagePath);
-//             }
-
-//             const checkImageDelete = await Images.findById(req.params.id)
-
-//             if (checkImageDelete) {
-//                 res.json({ status: 400, message: 'Image Not Deleted' });
-//             } else {
-//                 res.json({ status: 200, message: 'Image deleted Successfully' });
-//             }
-//         } else {
-//             res.json({ status: 400, message: "Image not found" });
-//         }
-//     } catch (error) {
-//         res.json({ status: 500, error: 'An error occurred while retrieving the record.' });
-//     }
-// };
-
-
 Router.deleteImage = async (req, res) => {
     try {
         const checkImage = await Images.findById(req.params.id);
@@ -266,6 +233,5 @@ Router.deleteImage = async (req, res) => {
         res.json({ status: 500, error: 'An error occurred while retrieving the record.' });
     }
 };
-
 
 module.exports = Router;

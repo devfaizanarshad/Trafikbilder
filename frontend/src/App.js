@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, { Component, Suspense } from 'react'
-import { BrowserRouter, HashRouter, Route, Routes, Navigate } from 'react-router-dom'
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
 import './scss/style.scss'
 
 const loading = (

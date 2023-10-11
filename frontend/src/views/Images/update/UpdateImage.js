@@ -6,7 +6,6 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import {
     CButton,
-    CFormTextarea,
     CCard,
     CCardBody,
     CCardGroup,
@@ -16,11 +15,10 @@ import {
     CFormInput,
     CInputGroup,
     CInputGroupText,
-    CRow,
-    CSelect, // Import CSelect for categories
+    CRow
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
-import { cilList, cilDescription } from '@coreui/icons';
+import { cilList } from '@coreui/icons';
 
 const UpdateImage = () => {
     const { id } = useParams();
@@ -115,7 +113,7 @@ return (
                                         <p className="text-small-emphasis">Update your image details</p>
                                         <CInputGroup className="mb-3">
                                             <img style={{ objectFit: "cover", width: "100px", height: "100px" }}
-                                                className="rounded-1 img-fluid" src={`${process.env.REACT_APP_API_BASE_URL}/images/${image}`} alt="Image related to categories" />
+                                                className="rounded-1 img-fluid" src={`https://trafikbilderbucket.s3.amazonaws.com/images/${image}`} alt="Image related to categories" />
                                         </CInputGroup>
                                         <CInputGroup className="mb-4">
                                             <CInputGroupText>Tags</CInputGroupText>

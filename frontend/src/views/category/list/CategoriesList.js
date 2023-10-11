@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import ReactPaginate from 'react-paginate';
 
@@ -12,7 +11,6 @@ const CategoriesList = () => {
   const [currentPage, setCurrentPage] = useState(0); // Current page number
   const [filteredCategory, setFilteredCategory] = useState([]); // Initialize with an empty array
   const perPage = 5; // Number of items per page
-  const navigate = useNavigate();
 
   useEffect(() => {
     axios
