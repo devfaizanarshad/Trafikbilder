@@ -137,7 +137,7 @@ Router.addVideo = async (req, res) => {
         }
     } catch (error) {
         console.error('Error:', error);
-        res.json({ status: 500, error: 'An error occurred in uploading the Video' });
+        res.json({ status: 500, error: error });
     }
 };
 
