@@ -3,7 +3,7 @@ const Router = express.Router();
 const Categories = require('../models/Categories');
 const Videos = require('../models/Videos');
 const multer = require("multer");
-const ffmpeg = require('fluent-ffmpeg'); // Import fluent-ffmpeg
+// const ffmpeg = require('fluent-ffmpeg'); // Import fluent-ffmpeg
 const { spawn } = require('child_process');
 const path = require("path");
 const fs = require("fs");
@@ -18,50 +18,50 @@ aws.config.update({
 });
 const s3 = new aws.S3();
 
-// Function to find the path to the ffmpeg executable
-function findFFmpegPath() {
-    try {
-        // Attempt to find the path to the ffmpeg executable
-        const ffmpegPath = which.sync('ffmpeg');
-        return ffmpegPath;
-    } catch (error) {
-        console.error('FFmpeg executable not found. Please make sure FFmpeg is installed and in your PATH.');
-        process.exit(1);
-    }
-}
+// // Function to find the path to the ffmpeg executable
+// function findFFmpegPath() {
+//     try {
+//         // Attempt to find the path to the ffmpeg executable
+//         const ffmpegPath = which.sync('ffmpeg');
+//         return ffmpegPath;
+//     } catch (error) {
+//         console.error('FFmpeg executable not found. Please make sure FFmpeg is installed and in your PATH.');
+//         process.exit(1);
+//     }
+// }
 
-// Define a function to compress a video using FFmpeg
-function compressVideo(inputPath, outputPath) {
-    const ffmpegPath = findFFmpegPath();
-    return new Promise((resolve, reject) => {
-        // Use FFmpeg command to compress the video
-        const ffmpeg = spawn('ffmpeg', [
-            '-i', inputPath,              // Input file
-            '-c:v', 'libx264',           // Video codec
-            '-crf', '28',                // Constant Rate Factor (lower value means higher quality but larger file size)
-            '-preset', 'slow',           // Compression preset (slow provides better compression)
-            outputPath                   // Output file
-        ]);
-        // Listen for FFmpeg process events
-        ffmpeg.stdout.on('data', (data) => {
-            console.log(`stdout: ${data}`);
-        });
+// // Define a function to compress a video using FFmpeg
+// function compressVideo(inputPath, outputPath) {
+//     const ffmpegPath = findFFmpegPath();
+//     return new Promise((resolve, reject) => {
+//         // Use FFmpeg command to compress the video
+//         const ffmpeg = spawn('ffmpeg', [
+//             '-i', inputPath,              // Input file
+//             '-c:v', 'libx264',           // Video codec
+//             '-crf', '28',                // Constant Rate Factor (lower value means higher quality but larger file size)
+//             '-preset', 'slow',           // Compression preset (slow provides better compression)
+//             outputPath                   // Output file
+//         ]);
+//         // Listen for FFmpeg process events
+//         ffmpeg.stdout.on('data', (data) => {
+//             console.log(`stdout: ${data}`);
+//         });
 
-        ffmpeg.stderr.on('data', (data) => {
-            console.error(`stderr: ${data}`);
-        });
+//         ffmpeg.stderr.on('data', (data) => {
+//             console.error(`stderr: ${data}`);
+//         });
 
-        ffmpeg.on('close', (code) => {
-            if (code === 0) {
-                console.log('Video compression finished');
-                resolve();
-            } else {
-                console.error(`Video compression process exited with code ${code}`);
-                reject(`Video compression process exited with code ${code}`);
-            }
-        });
-    });
-}
+//         ffmpeg.on('close', (code) => {
+//             if (code === 0) {
+//                 console.log('Video compression finished');
+//                 resolve();
+//             } else {
+//                 console.error(`Video compression process exited with code ${code}`);
+//                 reject(`Video compression process exited with code ${code}`);
+//             }
+//         });
+//     });
+// }
 
 Router.addVideo = async (req, res) => {
     try {
@@ -85,17 +85,17 @@ Router.addVideo = async (req, res) => {
                 // Define input and output paths for video compression
                 console.log("Video Not Exist");
                 const inputVideoPath = path.join(__dirname, '../public/videos', req.file.originalname);
-                const compressedVideoPath = path.join(__dirname, '../public/videos/compress', req.file.originalname);
-                console.log("inputVideoPath: " + inputVideoPath);
-                console.log("compressedVideoPath: " + compressedVideoPath);
-                // Compress the video
-                await compressVideo(inputVideoPath, compressedVideoPath);
+                // const compressedVideoPath = path.join(__dirname, '../public/videos/compress', req.file.originalname);
+                // console.log("inputVideoPath: " + inputVideoPath);
+                // console.log("compressedVideoPath: " + compressedVideoPath);
+                // // Compress the video
+                // await compressVideo(inputVideoPath, compressedVideoPath);
 
                 // Upload the compressed video to S3
                 const s3Params = {
                     Bucket: 'trafikbilderbucket', // Replace with your S3 bucket name
                     Key: `videos/${req.file.originalname}`, // Specify the path and filename in S3
-                    Body: fs.readFileSync(compressedVideoPath), // Read the compressed video file
+                    Body: fs.readFileSync(inputVideoPath), // Read the compressed video file
                     ACL: 'public-read', // Optional: Set the ACL (Access Control List)
                 };
 
@@ -104,14 +104,14 @@ Router.addVideo = async (req, res) => {
                 s3.upload(s3Params, async (error, s3Data) => {
                     if (error) {
                         // Remove the locally compressed video file and original file 
-                        fs.unlinkSync(compressedVideoPath);
+                        // fs.unlinkSync(compressedVideoPath);
                         fs.unlinkSync(inputVideoPath);
                         console.error('Error uploading video to S3:', error);
                         return res.status(500).json({ status: 500, error: 'An error occurred while uploading the video.' });
                     }
 
                     // Remove the locally compressed video file and original file after successful upload to S3
-                    fs.unlinkSync(compressedVideoPath);
+                    // fs.unlinkSync(compressedVideoPath);
                     fs.unlinkSync(inputVideoPath);
 
                     const VideoData = new Videos({
