@@ -18,13 +18,15 @@ import {
   CRow,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilLockLocked, cilUser, cilEnvelopeOpen } from '@coreui/icons'
+import { cilLockLocked, cilUser, cilEyedropper, cilEnvelopeOpen } from '@coreui/icons'
 
 const Register = () => {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate()
 
   const handleSubmit = (e) => {
@@ -171,7 +173,7 @@ const Register = () => {
                         <CIcon icon={cilLockLocked} />
                       </CInputGroupText>
                       <CFormInput
-                        type="password"
+                        type={showPassword ? 'text' : 'password'} // Toggle between 'text' and 'password'
                         placeholder="Password"
                         id="password"
                         name="password"
@@ -179,13 +181,19 @@ const Register = () => {
                         onChange={(e) => setPassword(e.target.value)}
                         autoComplete="current-password"
                       />
+                      <CInputGroupText
+                        onClick={() => setShowPassword(!showPassword)} // Toggle showPassword state
+                        style={{ cursor: 'pointer' }}
+                      >
+                        <CIcon icon={showPassword ? cilEyedropper : cilEyedropper} />
+                      </CInputGroupText>
                     </CInputGroup>
                     <CInputGroup className="mb-4">
                       <CInputGroupText>
                         <CIcon icon={cilLockLocked} />
                       </CInputGroupText>
                       <CFormInput
-                        type="password"
+                        type={showConfirmPassword ? 'text' : 'password'} // Toggle between 'text' and 'password'
                         id="confirmPassword"
                         name="confirmPassword"
                         value={confirmPassword}
@@ -193,6 +201,12 @@ const Register = () => {
                         placeholder="Confirm Password"
                         autoComplete="current-password"
                       />
+                      <CInputGroupText
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)} // Toggle showPassword state
+                        style={{ cursor: 'pointer' }}
+                      >
+                        <CIcon icon={setShowConfirmPassword ? cilEyedropper : cilEyedropper} />
+                      </CInputGroupText>
                     </CInputGroup>
                     <CRow>
                       <CCol xs={12} sm={6}>

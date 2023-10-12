@@ -63,16 +63,20 @@ const CustomersList = () => {
     const handleChangeStatus = async (id, status) => {
         // You can now update the selected option in the state or perform other actions.
         setSelectedOptions({ ...selectedOptions, [id]: status });
+        console.log("Status Change");
 
         await axios.put(`${process.env.REACT_APP_API_BASE_URL}/user/changeStatus/${id}`, { status: status })
             .then((response) => {
                 if (response.status === 200) {
+                    console.log("Status Change 2");
                     fetchCustomers();
                 } else {
+                    console.log("Status Change 3");
                     Swal.fire('Error!', 'Status changing failed.', 'error');
                 }
             })
             .catch((error) => {
+                console.log("Status Change 4");
                 console.error(error);
                 Swal.fire('Error!', 'Status changing failed.', 'error');
             });

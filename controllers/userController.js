@@ -215,15 +215,13 @@ Router.resetPassword = async (req, res) => {
 Router.changeStatus = async (req, res) => {
     try {
         const checkCustomer = await Users.findById(req.params.id);
-
         if (checkCustomer) {
-
             const updateState = await checkCustomer.save();
-            if (updateState.status === req.body.status) {
-                res.json({ status: 200, message: "Update Status Successfully" });
-            }
-
-        } else {
+            updateState.status = req.body.status;
+            updateState.save();
+            res.json({ status: 200, message: "Update Status Successfully" });
+        }
+        else {
             res.json({ status: 400, message: "Customer not found" });
         }
     } catch (error) {
