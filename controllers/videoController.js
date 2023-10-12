@@ -85,17 +85,17 @@ Router.addVideo = async (req, res) => {
                 // Define input and output paths for video compression
                 console.log("Video Not Exist");
                 const inputVideoPath = path.join(__dirname, '../public/videos', req.file.originalname);
-                const compressedVideoPath = path.join(__dirname, '../public/videos/compress', req.file.originalname);
-                console.log("inputVideoPath: " + inputVideoPath);
-                console.log("compressedVideoPath: " + compressedVideoPath);
-                // Compress the video
-                await compressVideo(inputVideoPath, compressedVideoPath);
+                // const compressedVideoPath = path.join(__dirname, '../public/videos/compress', req.file.originalname);
+                // console.log("inputVideoPath: " + inputVideoPath);
+                // console.log("compressedVideoPath: " + compressedVideoPath);
+                // // Compress the video
+                // await compressVideo(inputVideoPath, compressedVideoPath);
 
                 // Upload the compressed video to S3
                 const s3Params = {
                     Bucket: 'trafikbilderbucket', // Replace with your S3 bucket name
                     Key: `videos/${req.file.originalname}`, // Specify the path and filename in S3
-                    Body: fs.readFileSync(compressedVideoPath), // Read the compressed video file
+                    Body: fs.readFileSync(inputVideoPath), // Read the compressed video file
                     ACL: 'public-read', // Optional: Set the ACL (Access Control List)
                 };
 
@@ -104,15 +104,15 @@ Router.addVideo = async (req, res) => {
                 s3.upload(s3Params, async (error, s3Data) => {
                     if (error) {
                         // Remove the locally compressed video file and original file 
-                        fs.unlinkSync(compressedVideoPath);
-                        fs.unlinkSync(inputVideoPath);
+                        // fs.unlinkSync(compressedVideoPath);
+                        // fs.unlinkSync(inputVideoPath);
                         console.error('Error uploading video to S3:', error);
                         return res.status(500).json({ status: 500, error: 'An error occurred while uploading the video.' });
                     }
 
-                    // Remove the locally compressed video file and original file after successful upload to S3
-                    fs.unlinkSync(compressedVideoPath);
-                    fs.unlinkSync(inputVideoPath);
+                    // // Remove the locally compressed video file and original file after successful upload to S3
+                    // fs.unlinkSync(compressedVideoPath);
+                    // fs.unlinkSync(inputVideoPath);
 
                     const VideoData = new Videos({
                         name: req.file.originalname,
