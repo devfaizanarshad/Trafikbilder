@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React from 'react'
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 // Admin Panel Pages //
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
@@ -19,14 +19,13 @@ const AddVideo = React.lazy(() => import('./views/video/add/AddVideo'))
 const VideosList = React.lazy(() => import('./views/video/list/VideosList'))
 const UpdateVideo = React.lazy(() => import('./views/video/update/UpdateVideo'))
 // Front Pages //
-const Login = React.lazy(() => import('./views/pages/login/Login'))
 const AllPakages = React.lazy(() => import('./views/frontPages/pakages/AllPakages'))
 
 const token = localStorage.getItem('token');
 
 const routes = [
   { path: '/', name: 'Home', element: AllPakages, exact: true },
-  { path: '/dashboard', element: token ? (Dashboard) : (<Navigate to="/auth/login" replace />), exact: true },
+  { path: '/admin/dashboard', element: token ? (Dashboard) : (<Navigate to="/auth/login" replace />), exact: true },
   { path: '/category/add', element: token ? (NewCategory) : (<Navigate to="/auth/login" replace />), name: 'Add Category', exact: true },
   { path: '/category/list', element: token ? (CategoriesList) : (<Navigate to="/auth/login" replace />), name: 'Categories List', exact: true },
   { path: '/category/update/:id', element: token ? (UpdateCategory) : (<Navigate to="/auth/login" replace />), name: 'Update Category', exact: true },

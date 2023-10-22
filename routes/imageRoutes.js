@@ -4,9 +4,6 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-
-
-
 // Image
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -29,6 +26,7 @@ const router = express.Router();
 // router.get('/allCategoriesNames', imageController.allCategoriesNames);
 router.post('/addImage', upload.single('name'), imageController.addImage);
 router.get('/listOfImages', imageController.listOfImages);
+router.get('/listOfFrontImages', imageController.listOfFrontImages);
 router.put('/changeStatus/:id', imageController.changeStatus);
 router.delete('/deleteImage/:id', imageController.deleteImage);
 router.get('/getImage/:id', imageController.getImage);

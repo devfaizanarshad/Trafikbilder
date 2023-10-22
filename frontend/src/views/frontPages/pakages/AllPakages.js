@@ -1,5 +1,7 @@
 /* eslint-disable prettier/prettier */
 import React, { useState, useEffect } from 'react';
+import Header from "../navbar/Navbar";
+import Footer from "../footer/Footer";
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import CIcon from '@coreui/icons-react';
@@ -73,7 +75,10 @@ const AllPakages = () => {
 
     return (
         <>
-            <div className="container mt-3">
+            <div className="">
+                <Header />
+            </div>
+            <div className="container" style={{marginTop:"160px"}}>
                 <div className="row justify-content-center">
                     <div className="col-md-8 text-center">
                         <h1
@@ -169,6 +174,7 @@ const AllPakages = () => {
                     </Link>
                 </div>
             </div>
+            <Footer />
         </>
     );
 };

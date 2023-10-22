@@ -63,7 +63,7 @@ const CustomersList = () => {
     const handleChangeStatus = async (id, status) => {
         // You can now update the selected option in the state or perform other actions.
         setSelectedOptions({ ...selectedOptions, [id]: status });
-        console.log("Status Change");
+        console.log("Status Change" + status);
 
         await axios.put(`${process.env.REACT_APP_API_BASE_URL}/user/changeStatus/${id}`, { status: status })
             .then((response) => {

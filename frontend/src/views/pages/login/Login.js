@@ -54,6 +54,21 @@ const Login = () => {
       password,
     }
 
+    const token = localStorage.getItem('token');
+    if (token) {
+      axios.post(`${process.env.REACT_APP_API_BASE_URL}/user/logout`, { token: token })
+        .then((result) => {
+          if (result.data.status === 200) {
+            // Remove the token from local storage
+            localStorage.removeItem('token');
+          }
+        })
+        .catch((error) => {
+          // Handle error if necessary
+          console.error('Error occurred:', error);
+        });
+    }
+
     axios
       .post(`${process.env.REACT_APP_API_BASE_URL}/user/login`, formData)
       .then((response) => {
@@ -67,15 +82,13 @@ const Login = () => {
             title: 'Success',
             text: response.data.message,
           })
-          // console.log('Data: ' + response.data.data)
-          // console.log('Role: ' + response.data.data.role)
           if (response.data.data.role === 0) {
-            // console.log('Role: ' + response.data.data.role)
-            // navigate('/dashboard')
-            window.location.href = "/dashboard";
+            navigate('/admin/dashboard')
+            window.location.href = "/admin/dashboard";
           }
-          if (response.data.data.role === 1) {
-            navigate('/')
+          else if (response.data.data.role === 1) {
+            navigate('/home')
+            window.location.href = "/home";
           }
         } else {
           Swal.fire({

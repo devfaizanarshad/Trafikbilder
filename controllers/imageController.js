@@ -124,6 +124,33 @@ Router.listOfImages = async (req, res) => {
     }
 };
 
+Router.listOfFrontImages = async (req, res) => {
+    try {
+        const imagesData = await Images.find({ state: 'Approved' });
+
+        // Create a list to store images with category names
+        const imagesWithCategoryNames = await Promise.all(imagesData.map(async (image) => {
+            // Fetch category names based on category IDs stored in the image
+            const categoryNames = await Categories.find({ _id: { $in: image.categories } }).select('name');
+
+            // Map category documents to category names
+            const categories = categoryNames.map(category => category.name);
+
+            // Create a new object with category names and other image data
+            const imageWithCategories = {
+                ...image._doc, // Include existing image data
+                categories: categories, // Replace category IDs with category names
+            };
+
+            return imageWithCategories;
+        }));
+        console.log("Images: " + imagesWithCategoryNames);
+        res.json({ status: 200, data: imagesWithCategoryNames });
+    } catch (error) {
+        res.json({ status: 500, error: 'An error occurred while retrieving the records.' });
+    }
+};
+
 Router.changeStatus = async (req, res) => {
     try {
         const checkImage = await Images.findById(req.params.id);
