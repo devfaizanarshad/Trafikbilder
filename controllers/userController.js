@@ -131,6 +131,9 @@ Router.login = async (req, res) => {
                         const token = jwt.sign(
                             {
                                 id: user._id,
+                                name: user.name,
+                                email: user.email,
+                                role: user.role,
                             },
                             JWT_SECRET,
                             { expiresIn: '24h' }
@@ -185,6 +188,30 @@ Router.listOfCustomers = async (req, res) => {
     }
 };
 
+// customerDashboardData
+Router.customerDashboardData = async (req, res) => {
+    try {
+        const { token } = req.body;
+        const decodedToken = jwt.verify(token, JWT_SECRET);
+        const userId = decodedToken.id;
+        const userName = decodedToken.name;
+        const userEmail = decodedToken.email;
+
+        const user = await Users.findOne({ _id: userId });
+        const checkPakage = await Subscriptions.findById(user.subscriptionPakage);
+
+        console.log("userId: ", userId);
+        console.log("userName: ", userName);
+        console.log("userEmail: ", userEmail);
+        console.log("checkPakage: ", checkPakage.name);
+
+        res.json({ status: 200, message: "Logout Successful", id: userId, name: userName, email: userEmail, pakageName: checkPakage.name });
+    } catch (error) {
+        console.error(error);
+        res.json({ status: 500, message: "An error occurred while processing your request" });
+    }
+};
+
 // resetPassword //
 Router.resetPassword = async (req, res) => {
     try {
@@ -208,6 +235,47 @@ Router.resetPassword = async (req, res) => {
         }
     } catch (error) {
         res.json({ status: 500, error: 'An error occurred while retrieving the record.' });
+    }
+};
+
+// changeCustomerPassword
+Router.changeCustomerPassword = async (req, res) => {
+    try {
+        const { id, prevPassword, password, confirmPassword } = req.body;
+        if (prevPassword && password && confirmPassword) {
+            if (password === confirmPassword) {
+                const checkEmail = await Users.findById(id);
+                if (checkEmail) {
+                    const passwordMatch = await bcrypt.compare(prevPassword, checkEmail.password);
+                    if (passwordMatch) {
+                        // Hash the password before saving it
+                        const saltRounds = 10; // You can adjust the number of salt rounds
+                        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+                        checkEmail.password = hashedPassword;
+                        const saveUser = await checkEmail.save();
+
+                        if (saveUser) {
+                            res.json({ status: 200, message: "Password change Successfully", data: saveUser });
+                        } else {
+                            res.json({ status: 500, message: "Error occurred in Password change" });
+                        }
+                    } else {
+                        res.json({ status: 400, message: "Your Previous Password not match" });
+                    }
+                }
+                else {
+                    res.json({ status: 400, message: "Account with this id not exist" });
+                }
+            } else {
+                res.json({ status: 400, message: "Password and Confirm Password not match" });
+            }
+        } else {
+            res.json({ status: 400, message: "Please Input All required Information" });
+        }
+    } catch (error) {
+        console.error(error);
+        res.json({ status: 500, message: "An error occurred while processing your request" });
     }
 };
 
