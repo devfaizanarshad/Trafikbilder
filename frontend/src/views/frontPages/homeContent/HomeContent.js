@@ -200,69 +200,42 @@ const HomeContent = () => {
     }
   };
 
+  const handleFilter = (e) => {
+    const searchText = e.target.value.toLowerCase();
+
+    if (searchText.trim() === '') {
+      setfilteredImage(images); // Reset filtered data to all data
+    } else {
+      const filteredData = images.filter((item) => {
+        const itemTags = item.tags.join(' ').toLowerCase();
+        const itemCategories = item.categories.join(' ').toLowerCase();
+        return itemTags.includes(searchText) || itemCategories.includes(searchText);
+      });
+      setfilteredImage(filteredData);
+    }
+  };
+
+
   return (
     <div
       className="main-content justify-content-end mb-5"
-      style={{ paddingTop: "135px" }}
+      style={{ paddingTop: "100px" }}
     >
       {/* main page images render using map */}
       <div className="Box row justify-content-center justify-content-evenly">
-        {/* <CForm onSubmit={handleSubmit} encType="multipart/form-data">
-          <h2>Upload New Image</h2>
-          <div className="mb-3">
-            {uploadProgress && ( // Only show progress bar when upload is in progress
-              <div className="d-flex align-items-center">
-                <div className="progress">
-                  <div
-                    className="progress-bar"
-                    role="progressbar"
-                    style={{ width: '130px' }}
-                  >
-                    {uploadProgress}
-                  </div>
-                </div>
-                <CSpinner
-                  className="ms-2"
-                  variant="grow"
-                  size="sm"
-                />
-              </div>
-            )}
-          </div>
-          <CInputGroup className="mb-3">
-            <CInputGroupText>
-              <CIcon icon={cilImage} />
-            </CInputGroupText>
-            <CFormInput
-              type="file"
-              id="name"
-              name="name"
-              onChange={handleFileChange}
-              accept="image/jpeg, image/jpg, image/png"
-              required
-            />
-          </CInputGroup>
-          <CRow>
-            <CCol xs={12} sm={6}>
-              <CButton
-                className="w-100"
-                type="submit"
-                style={{
-                  color: '#fff',
-                  backgroundColor: '#D4AF37',
-                  border: 'none',
-                  fontWeight: 'bold',
-                }}
-              >
-                Upload Image
-              </CButton>
-            </CCol>
-          </CRow>
-        </CForm> */}
         <CForm onSubmit={handleSubmit} encType="multipart/form-data" className="d-flex flex-wrap justify-content-center">
-          <div className="mb-4 me-5" style={{ marginLeft: "53px" }}>
+          <div className="mt-3 text-lg-start text-center" style={{ marginLeft: "50px", marginRight: "auto", maxWidth: "300px", width: "100%" }}>
+            <input
+              type="text"
+              placeholder="Sök bild"
+              onChange={handleFilter}
+              className="form-control rounded-pill"
+              style={{ width: "100%" }}
+            />
+          </div>
+          <div className="mb-4 me-3 text-center" style={{ marginLeft: "20px" }}>
             <div className="mb-3">
-              {uploadProgress && ( 
+              {uploadProgress && (
                 <div className="d-flex align-items-center">
                   <div className="progress">
                     <div
@@ -296,7 +269,7 @@ const HomeContent = () => {
             </CInputGroup>
           </div>
           <CButton
-            className="flex-shrink-0 align-self-end mb-4 me-5"
+            className="flex-shrink-0 align-self-end mb-4 me-0"
             type="submit"
             style={{
               color: '#fff',
@@ -305,10 +278,10 @@ const HomeContent = () => {
               fontWeight: 'bold',
             }}
           >
-            Upload Image
+            Skicka bild
           </CButton>
         </CForm>
-        {images.map((element, index) => (
+        {filteredImage.map((element, index) => (
           <div className="col-lg-3 mx-4 col-md-6 mb-2 text-center" key={index}>
             <div className="card-body">
               <div className="image-container">

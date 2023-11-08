@@ -7,11 +7,12 @@ import Footer from "../footer/Footer";
 
 const Home = () => {
   return (
-    <div className="homepage" style={{ overflowX: "hidden"  }}>
+    <div className="homepage" style={{ overflowX: "hidden" }}>
       <div>
         <Header />
       </div>
-      <div className="" style={{marginTop:"50px"}}>
+
+      <div className="" style={{ marginTop: "50px" }}>
         <div className="row">
           <div className="col-lg-2 col-12">
             <Sidebar />

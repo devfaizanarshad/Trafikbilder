@@ -202,17 +202,17 @@ const Navbar = () => {
           >
             <li className="nav-item mx-1">
               <Link className="nav-link" to="/home">
-                Home
+                Hem
               </Link>
             </li>
             <li className="nav-item mx-1">
               <Link className="nav-link" to="/videos">
-                Videos
+                Filmer
               </Link>
             </li>
             <li className="nav-item mx-1">
               <Link className="nav-link" to="/about" tabIndex="-1">
-                About Us
+                Om oss
               </Link>
             </li>
             {/* <li className="nav-item mx-1">
@@ -222,28 +222,28 @@ const Navbar = () => {
             </li> */}
             <li className="nav-item mx-1">
               <Link className="nav-link" to="/customer/dashboard" tabIndex="-1">
-                Dashboard
+                Kontrollbord
               </Link>
             </li>
             <li className="nav-item mx-1">
               <Link className="nav-link" to="/auth/login" tabIndex="-1">
-                Login
+                Logga in
               </Link>
             </li>
             <li className="nav-item mx-1" onClick={handleLogout}>
               <Link className="nav-link" to="" tabIndex="-1">
-                Logout
+                Logga ut
               </Link>
             </li>
           </ul>
         </div>
       </div>
-      {/* Bottom search bar */}
+      {/* Bottom search bar
       <section className="container-fluid d-flex flex-md-row justify-content-between align-items-center">
         <div className="container-fluid mt-2">
           <div className="row">
             <div className="col-lg-9">
-              {/* Search input div */}
+              {/* Search input div
               <div className="input-group" style={{ cursor: "pointer" }}>
                 <span className="input-group-text">
                   <BsCamera className="mx-2" />
@@ -262,7 +262,7 @@ const Navbar = () => {
                 </span>
               </div>
             </div>
-            {/* Btn for Search Your Interest to search img */}
+            {/* Btn for Search Your Interest to search img
             <div className="d-none d-lg-block col-lg-3 col-sm-12 pt-2">
               <div className="d-flex justify-content-end align-items-center">
                 <ul className="list-unstyled d-flex gap-2 align-items-end">
@@ -281,7 +281,7 @@ const Navbar = () => {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
     </nav>
   );
 };

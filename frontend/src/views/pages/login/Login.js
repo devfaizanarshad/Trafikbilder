@@ -116,8 +116,8 @@ const Login = () => {
               <CCard className="p-4">
                 <CCardBody>
                   <CForm method="post" onSubmit={handleSubmit}>
-                    <h1>Login</h1>
-                    <p className="text-medium-emphasis">Sign In to your account</p>
+                    <h1>Logga in</h1>
+                    <p className="text-medium-emphasis">Logga in nedan om du har konto</p>
                     <CInputGroup className="mb-3">
                       <CInputGroupText>
                         <CIcon icon={cilEnvelopeOpen} />
@@ -128,7 +128,7 @@ const Login = () => {
                         name="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Email"
+                        placeholder="E-post"
                         autoComplete="Email"
                         style={{ flex: 1 }} // Add this style to make the input field fill available space
                       />
@@ -143,7 +143,7 @@ const Login = () => {
                         name="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Password"
+                        placeholder="Lösenord"
                         autoComplete="current-password"
                         style={{ flex: 1 }} // Add this style to make the input field fill available space
                       />
@@ -166,7 +166,7 @@ const Login = () => {
                             fontWeight: 'bold',
                           }}
                         >
-                          Login
+                          Logga in
                         </CButton>
                       </CCol>
                     </CRow>
@@ -179,11 +179,12 @@ const Login = () => {
               >
                 <CCardBody className="text-center">
                   <div>
-                    <h2>Sign up</h2>
+                    <h2>Välkommen till trafikbilder.se</h2>
                     <p>
-                      At Trafikbilder, explore 30 captivating image categories, with exclusive
-                      access for Pre-paid users and powerful tools for Administrators. Join us for a
-                      visual adventure today.
+                      Av trafiklärare, för trafiklärare!
+                      Medlemmar har tillgång till royaltyfria bilder inom körkortsbehörigheterna
+                      A, A1, A2, B, B96, BE C, CE, D, DE, YKB, Taxi och en övriga-bilder kategori.
+                      Du väljer själv vilket medlemskap du önskar dig.
                     </p>
                     <Link to="/auth/signup">
                       <CButton
@@ -197,7 +198,7 @@ const Login = () => {
                           fontWeight: 'bold',
                         }}
                       >
-                        Register Now!
+                        Registrera dig här
                       </CButton>
                     </Link>
                   </div>

@@ -28,15 +28,13 @@ function Footer() {
                 </h6>
                 {/* Description */}
                 <p>
-                  Here you can use rows and columns to organize your footer
-                  content. Lorem ipsum dolor sit amet, consectetur adipisicing
-                  elit.
+                TransportTeori AB Importgatan 10 22 46 Göteborg
                 </p>
               </div>
 
               <hr className="w-100 clearfix d-md-none" />
 
-              <div className="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
+              {/* <div className="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
                 <h6
                   className="text-uppercase mb-4 font-weight-bold"
                   style={{ color: "#D4AF37", fontWeight: "bolder" }}
@@ -55,11 +53,11 @@ function Footer() {
                 <p>
                   <a className="text-white">Woman Angular</a>
                 </p>
-              </div>
+              </div> */}
 
               <hr className="w-100 clearfix d-md-none" />
 
-              <div className="d-none d-lg-block col-md-3 col-lg-2 col-xl-2 mx-auto pl-3 mt-3">
+              {/* <div className="d-none d-lg-block col-md-3 col-lg-2 col-xl-2 mx-auto pl-3 mt-3">
                 <h6
                   className=" text-uppercase mb-4 font-weight-bold"
                   style={{ color: "#D4AF37", fontWeight: "bolder" }}
@@ -78,7 +76,7 @@ function Footer() {
                 <p>
                   <a className="text-white">Help</a>
                 </p>
-              </div>
+              </div> */}
 
               <hr className="w-100 clearfix d-md-none" />
 
@@ -90,16 +88,10 @@ function Footer() {
                   Contact
                 </h6>
                 <p>
-                  <i className="fas fa-home mr-3"></i> Lahore Pakistan, RA 100e312, LR
+                  <i className="fas fa-home mr-3"></i> Kontakta oss via E-post 
                 </p>
                 <p>
-                  <i className="fas fa-envelope mr-3"></i> info@gmail.com
-                </p>
-                <p>
-                  <i className="fas fa-phone mr-3"></i> + 01 234 567 88
-                </p>
-                <p>
-                  <i className="fas fa-print mr-3"></i> + 01 234 567 89
+                  <i className="fas fa-envelope mr-3"></i> kundcenter@transportteori.se
                 </p>
               </div>
             </div>

@@ -34,15 +34,13 @@ const ListOfVideos = () => {
         if (searchText.trim() === '') {
             setfilteredvideo(videos); // Reset filtered data to all data
         } else {
-            const filteredData = videos.filter((item) =>
-                Object.values(item).some((value) =>
-                    String(value).toLowerCase().includes(searchText)
-                )
-            );
+            const filteredData = videos.filter((item) => {
+                const itemTags = item.tags.join(' ').toLowerCase();
+                const itemCategories = item.categories.join(' ').toLowerCase();
+                return itemTags.includes(searchText) || itemCategories.includes(searchText);
+            });
             setfilteredvideo(filteredData);
         }
-
-        setCurrentPage(0);
     };
 
     return (
@@ -52,10 +50,10 @@ const ListOfVideos = () => {
         >
             <div className="row">
                 <div className="col-md-12 d-flex justify-content-between align-items-center">
-                    <div className="mb-3" style={{marginLeft:"50px"}}>
+                    <div className="mb-3" style={{ marginLeft: "50px" }}>
                         <input
                             type="text"
-                            placeholder="Search Videos with tags"
+                            placeholder="Search Videos"
                             onChange={handleFilter}
                             className="form-control rounded-pill w-76"
                         />
@@ -64,7 +62,7 @@ const ListOfVideos = () => {
             </div>
             {/* main page images render using map */}
             <div className="Box row justify-content-center justify-content-evenly">
-                {videos.map((element, index) => (
+                {filteredvideo.map((element, index) => (
                     <div className="col-lg-3 mx-4 col-md-6 mb-2 text-center" key={index}>
                         <div className="card-body">
                             <div className="image-container">
