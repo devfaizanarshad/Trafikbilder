@@ -77,18 +77,18 @@ const Sidebar = () => {
 
     useEffect(() => {
         axios
-          .get(`${process.env.REACT_APP_API_BASE_URL}/category/listOfCategories`)
-          .then((result) => {
-            if (Array.isArray(result.data.data)) {
-                setCategories(result.data.data);
-            } else {
-              console.error("API response is not an array:", result.data.data);
-            }
-          })
-          .catch((error) => {
-            console.error("API error:", error);
-          });
-      }, []);
+            .get(`${process.env.REACT_APP_API_BASE_URL}/category/listOfCategories`)
+            .then((result) => {
+                if (Array.isArray(result.data.data)) {
+                    setCategories(result.data.data);
+                } else {
+                    console.error("API response is not an array:", result.data.data);
+                }
+            })
+            .catch((error) => {
+                console.error("API error:", error);
+            });
+    }, []);
 
     return (
         <>
