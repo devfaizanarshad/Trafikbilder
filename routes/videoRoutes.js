@@ -24,6 +24,7 @@ const router = express.Router();
 
 router.post('/addVideo', upload.single('name'), videoController.addVideo);
 router.get('/listOfVideos', videoController.listOfVideos);
+router.post('/listOfFrontVideos', videoController.listOfFrontVideos);
 router.put('/changeStatus/:id', videoController.changeStatus);
 router.delete('/deleteVideo/:id', videoController.deleteVideo);
 router.get('/getVideo/:id', videoController.getVideo);

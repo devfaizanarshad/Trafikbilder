@@ -26,7 +26,7 @@ const router = express.Router();
 // router.get('/allCategoriesNames', imageController.allCategoriesNames);
 router.post('/addImage', upload.single('name'), imageController.addImage);
 router.get('/listOfImages', imageController.listOfImages);
-router.get('/listOfFrontImages', imageController.listOfFrontImages);
+router.post('/listOfFrontImages', imageController.listOfFrontImages);
 router.put('/changeStatus/:id', imageController.changeStatus);
 router.delete('/deleteImage/:id', imageController.deleteImage);
 router.get('/getImage/:id', imageController.getImage);

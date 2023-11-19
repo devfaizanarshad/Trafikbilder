@@ -14,8 +14,6 @@ Router.signUp = async (req, res) => {
     try {
         const { name, email, password, confirmPassword } = req.body;
         if (name && email && password) {
-            console.log("password: " + password);
-            console.log("confirmPassword: " + confirmPassword);
             if (password === confirmPassword) {
 
                 const checkEmail = await Users.find({ email: email });
@@ -67,31 +65,24 @@ Router.login = async (req, res) => {
                 if (userStatus) {
                     // Compare the provided password with the stored hashed password
                     const passwordMatch = await bcrypt.compare(password, user.password);
-                    // console.log("subscriptionPakage: " + user.subscriptionPakage);
                     if (passwordMatch) {
                         const userLoginDevices = await Users.findOne({ email: email, loginDevice: 1 });
                         if (user.role !== 0) {
                             if (userLoginDevices) {
                                 res.json({ status: 400, message: "Please logout from other device to login here.", data: user });
                             } else {
-                                console.log("1");
                                 const zeroPricePackage = await Subscriptions.findOne({ price: 0 });
-                                console.log("zeroPricePackage: " + zeroPricePackage);
                                 if (user.subscriptionPakage === "No Pakage") {
                                     if (zeroPricePackage) {
-                                        console.log("zeroPricePackage: " + zeroPricePackage._id);
                                         user.subscriptionPakage = zeroPricePackage._id;
                                     }
                                 }
                                 else {
                                     const userPakage = user.subscriptionPakage;
                                     // Convert userPakage to ObjectId
-                                    console.log("userPakage: " + userPakage);
                                     const userPakageObjectId = new mongoose.Types.ObjectId(userPakage);
                                     const findPakagePrice = await Subscriptions.findById(userPakageObjectId);
-                                    console.log("findPakagePrice: " + findPakagePrice.price);
                                     if (findPakagePrice.price !== 0) {
-                                        console.log("Price not equal to Zero");
                                         // Check the Pakage allocation date with the current date
                                         const createdDate = new Date(user.pakageAllocationDate);
                                         const currentDate = new Date();
@@ -104,9 +95,6 @@ Router.login = async (req, res) => {
 
                                         // Compare if one year has passed
                                         if (timeDifference >= millisecondsInOneYear) {
-                                            console.log("One year has passed.");
-                                            console.log("zeroPricePackage: " + zeroPricePackage._id);
-                                            console.log("user: " + user._id);
                                             const updatePakage = await Users.findByIdAndUpdate(
                                                 { _id: user._id },
                                                 {
@@ -199,11 +187,6 @@ Router.customerDashboardData = async (req, res) => {
 
         const user = await Users.findOne({ _id: userId });
         const checkPakage = await Subscriptions.findById(user.subscriptionPakage);
-
-        console.log("userId: ", userId);
-        console.log("userName: ", userName);
-        console.log("userEmail: ", userEmail);
-        console.log("checkPakage: ", checkPakage.name);
 
         res.json({ status: 200, message: "Logout Successful", id: userId, name: userName, email: userEmail, pakageName: checkPakage.name });
     } catch (error) {
@@ -301,7 +284,6 @@ Router.changeStatus = async (req, res) => {
 Router.deleteCustomer = async (req, res) => {
     try {
         const userID = req.params.id;
-        console.log("Id: " + userID);
         // Step 1: Find and delete the customer
         const checkCustomer = await Users.findById(userID);
         if (!checkCustomer) {

@@ -144,13 +144,6 @@ const AllPakages = () => {
     */}
                 <div className="col-12">
                     <div className="container" style={{ marginTop: "160px" }}>
-                        {/* Display the data from the API */}
-                        {/* <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <DataDisplay label="ID" value={id} />
-                            <DataDisplay label="Name" value={name} />
-                            <DataDisplay label="Email" value={email} />
-                            <DataDisplay label="Package Name" value={pakageName} />
-                        </div> */}
                         <div className='row' style={{ marginTop: '20px' }}>
                             <div className='col-md-9 mb-4 mb-md-0'>
                                 <div className="row">
@@ -190,14 +183,10 @@ const AllPakages = () => {
                                     className="Title display-4 font-weight-bold text-lg text-md text-sm"
                                     style={{ fontWeight: "600", color: "#D4AF37" }}
                                 >
-                                    Trafikbuilder.se Packages
+                                    Trafikbilder.se Packages
                                 </h1>
                                 <p className="Description flex-grow p-2" style={{ fontWeight: "600" }}>
-                                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                                    Provident possimus laboriosam, expedita quidem harum similique
-                                    adipisci explicabo consequatur enim hic totam. Soluta unde
-                                    eligendi impedit quo excepturi dolorem eos sequi, similique atque
-                                    autem consequatur voluptates reiciendis consequuntur esse ut rem?
+                                    Write payment note here
                                 </p>
                             </div>
                         </div>

@@ -170,6 +170,11 @@ const Login = () => {
                         </CButton>
                       </CCol>
                     </CRow>
+                    <CRow className='mt-3'>
+                      <CCol xs={12} sm={6}>
+                        <a className="w-100" href="https://mail.google.com/mail/u/0/?tab=rm&ogbl#search/kundcenter%40transportteori.se?compose=new" target="blank">Contact for query</a>
+                      </CCol>
+                    </CRow>
                   </CForm>
                 </CCardBody>
               </CCard>

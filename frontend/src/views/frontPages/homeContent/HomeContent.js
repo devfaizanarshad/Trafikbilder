@@ -27,7 +27,8 @@ const HomeContent = () => {
   // Fetch images when the component mounts
   const fetchImages = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/image/listOfFrontImages`);
+      const token = localStorage.getItem('token');
+      const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/image/listOfFrontImages`, { token: token });
       if (Array.isArray(response.data.data)) {
         setImages(response.data.data);
         setfilteredImage(response.data.data); // Initialize filteredImage with the same data

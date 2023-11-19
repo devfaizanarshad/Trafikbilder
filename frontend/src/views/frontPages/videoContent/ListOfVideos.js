@@ -13,7 +13,8 @@ const ListOfVideos = () => {
     // Fetch videos when the component mounts
     const fetchVideos = async () => {
         try {
-            const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/video/listOfVideos`);
+            const token = localStorage.getItem('token');
+            const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/video/listOfFrontVideos`, { token: token });
             if (Array.isArray(response.data.data)) {
                 setVideos(response.data.data);
                 setfilteredvideo(response.data.data); // Initialize filteredvideo with the same data

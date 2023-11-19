@@ -2,7 +2,11 @@ const express = require('express');
 const Router = express.Router();
 const Categories = require('../models/Categories');
 const Videos = require('../models/Videos');
+const Users = require('../models/Users');
+const Subscriptions = require('../models/Subscriptions');
 const multer = require("multer");
+const JWT_SECRET = "SecurityInsure";
+const jwt = require('jsonwebtoken');
 // const ffmpeg = require('fluent-ffmpeg'); // Import fluent-ffmpeg
 const { spawn } = require('child_process');
 const path = require("path");
@@ -141,6 +145,46 @@ Router.addVideo = async (req, res) => {
     }
 };
 
+Router.listOfFrontVideos = async (req, res) => {
+    try {
+        // find user pakage
+        console.log("1");
+        const { token } = req.body;
+        const decodedToken = jwt.verify(token, JWT_SECRET);
+        const userID = decodedToken.id;
+        const user = await Users.findById(userID);
+        console.log("User: " + user);
+        const userPakageCategories = await Subscriptions.findById(user.subscriptionPakage);
+        console.log("userPakageCategories: " + userPakageCategories);
+        // pakage categories
+        const videoCategories = userPakageCategories.categories;
+
+        // Find images whose categories match any in imageCategories
+        const VideosData = await Videos.find({ categories: { $in: videoCategories } });
+        console.log("VideosData: " + VideosData);
+
+        // Create a list to store Videos with category names
+        const VideosWithCategoryNames = await Promise.all(VideosData.map(async (Video) => {
+            // Fetch category names based on category IDs stored in the Video
+            const categoryNames = await Categories.find({ _id: { $in: Video.categories } }).select('name');
+
+            // Map category documents to category names
+            const categories = categoryNames.map(category => category.name);
+
+            // Create a new object with category names and other Video data
+            const VideoWithCategories = {
+                ...Video._doc, // Include existing Video data
+                categories: categories, // Replace category IDs with category names
+            };
+
+            return VideoWithCategories;
+        }));
+
+        res.json({ status: 200, data: VideosWithCategoryNames });
+    } catch (error) {
+        res.json({ status: 500, error: 'An error occurred while retrieving the records.' });
+    }
+};
 
 Router.listOfVideos = async (req, res) => {
     try {

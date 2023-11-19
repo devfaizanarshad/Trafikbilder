@@ -88,6 +88,8 @@ function AddVideo() {
                         },
                     }
                 );
+                
+                console.log("Response: " , response);
 
                 if (response.data.status === 200) {
                     Swal.fire({

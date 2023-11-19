@@ -1,9 +1,13 @@
 const express = require('express');
 const Router = express.Router();
 const Categories = require('../models/Categories');
+const Subscriptions = require('../models/Subscriptions');
 const Images = require('../models/Images');
 const multer = require("multer");
 const path = require("path");
+const Users = require('../models/Users');
+const JWT_SECRET = "SecurityInsure";
+const jwt = require('jsonwebtoken');
 const fs = require("fs");
 const fsWithoutPromises = require('fs');
 
@@ -62,7 +66,7 @@ Router.addImage = async (req, res) => {
 
             const tagsArray = tags.split(",");
             if (req.file.originalname) {
-                const checkImage = await Images.findOne({ name: req.file.originalname})
+                const checkImage = await Images.findOne({ name: req.file.originalname })
                 if (checkImage) {
                     res.json({ status: 400, message: 'This image already exist' });
                 } else {
@@ -126,7 +130,18 @@ Router.listOfImages = async (req, res) => {
 
 Router.listOfFrontImages = async (req, res) => {
     try {
-        const imagesData = await Images.find({ state: 'Approved' });
+        // find user pakage
+        const { token } = req.body;
+        const decodedToken = jwt.verify(token, JWT_SECRET);
+        const userID = decodedToken.id;
+        const user = await Users.findById(userID);
+        const userPakageCategories = await Subscriptions.findById(user.subscriptionPakage);
+
+        // pakage categories
+        const imageCategories = userPakageCategories.categories;
+
+        // Find images whose categories match any in imageCategories
+        const imagesData = await Images.find({ state: 'Approved', categories: { $in: imageCategories } });
 
         // Create a list to store images with category names
         const imagesWithCategoryNames = await Promise.all(imagesData.map(async (image) => {
@@ -144,7 +159,7 @@ Router.listOfFrontImages = async (req, res) => {
 
             return imageWithCategories;
         }));
-        console.log("Images: " + imagesWithCategoryNames);
+
         res.json({ status: 200, data: imagesWithCategoryNames });
     } catch (error) {
         res.json({ status: 500, error: 'An error occurred while retrieving the records.' });
