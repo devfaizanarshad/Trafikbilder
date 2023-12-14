@@ -131,14 +131,26 @@ Router.listOfImages = async (req, res) => {
 Router.listOfFrontImages = async (req, res) => {
     try {
         // find user pakage
-        const { token } = req.body;
+        const { token, category } = req.body;
+        //console.log("Catgeory Selected: ", category);
         const decodedToken = jwt.verify(token, JWT_SECRET);
         const userID = decodedToken.id;
         const user = await Users.findById(userID);
         const userPakageCategories = await Subscriptions.findById(user.subscriptionPakage);
 
         // pakage categories
-        const imageCategories = userPakageCategories.categories;
+        let imageCategories = userPakageCategories.categories;
+        console.log("imageCategories: ", imageCategories);
+        // Selected Category
+        if (imageCategories) {
+            if (category !== null) {
+                imageCategories = [category];
+                console.log("Image: ", imageCategories);
+            }
+            else {
+                console.log("Category not exist");
+            }
+        }
 
         // Find images whose categories match any in imageCategories
         const imagesData = await Images.find({ state: 'Approved', categories: { $in: imageCategories } });

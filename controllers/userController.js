@@ -1,10 +1,10 @@
 const express = require('express');
 const bcrypt = require('bcrypt'); // Import bcrypt
-const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const Router = express.Router();
 const Users = require('../models/Users');
 const Subscriptions = require('../models/Subscriptions');
+const jwt = require('jsonwebtoken');
 const JWT_SECRET = "SecurityInsure";
 const cors = require("cors");
 Router.use(cors());

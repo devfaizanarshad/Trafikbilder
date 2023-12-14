@@ -1,9 +1,11 @@
 /* eslint-disable prettier/prettier */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import VideosCategoryContext from '../VideoContext/VideosCategoryContext';
 import { Link } from 'react-router-dom';
 
 const ListOfVideos = () => {
+    const { selectedCategory } = useContext(VideosCategoryContext);
     const [videos, setVideos] = useState([]);
     const [currentPage, setCurrentPage] = useState(0); // Current page number
     const [viewVideoId, setViewVideoId] = useState(null);
@@ -14,7 +16,8 @@ const ListOfVideos = () => {
     const fetchVideos = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/video/listOfFrontVideos`, { token: token });
+            console.log("Fetching videos for category:", selectedCategory);
+            const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/video/listOfFrontVideos`, { token: token, category: selectedCategory });
             if (Array.isArray(response.data.data)) {
                 setVideos(response.data.data);
                 setfilteredvideo(response.data.data); // Initialize filteredvideo with the same data
@@ -27,7 +30,7 @@ const ListOfVideos = () => {
     };
     useEffect(() => {
         fetchVideos();
-    }, []);
+    }, [selectedCategory]);
 
     const handleFilter = (e) => {
         const searchText = e.target.value.toLowerCase();

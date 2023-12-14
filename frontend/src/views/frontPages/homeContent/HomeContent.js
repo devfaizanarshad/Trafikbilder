@@ -1,5 +1,7 @@
 /* eslint-disable prettier/prettier */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { useNavigate, useLocation } from 'react-router-dom';
+import CategoryContext from '../contexts/CategoryContext';
 import axios from 'axios';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import {
@@ -16,6 +18,7 @@ import Swal from 'sweetalert2';
 import { CSpinner } from '@coreui/react';
 
 const HomeContent = () => {
+  const { selectedCategory } = useContext(CategoryContext);
   const [uploadProgress, setUploadProgress] = useState("");
   const [selectedCategories, setSelectedCategories] = useState("");
   const [tags, setTags] = useState([]);
@@ -23,12 +26,17 @@ const HomeContent = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [images, setImages] = useState([]);
   const [filteredImage, setfilteredImage] = useState([]); // Initialize with an empty array
+  // State to store the scroll position
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const location = useLocation();
+
+  // scrolling ////////////////////
 
   // Fetch images when the component mounts
   const fetchImages = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/image/listOfFrontImages`, { token: token });
+      const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/image/listOfFrontImages`, { token: token, category: selectedCategory });
       if (Array.isArray(response.data.data)) {
         setImages(response.data.data);
         setfilteredImage(response.data.data); // Initialize filteredImage with the same data
@@ -41,7 +49,7 @@ const HomeContent = () => {
   };
   useEffect(() => {
     fetchImages();
-  }, []);
+  }, [selectedCategory]);
 
   const validateFile = (file) => {
     const maxSize = 7 * 1024 * 1024; // 6MB in bytes
@@ -216,6 +224,56 @@ const HomeContent = () => {
     }
   };
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
+  // Restore scroll position when navigating back to the page
+  useEffect(() => {
+    const handleScrollRestoration = () => {
+      window.scrollTo(0, scrollPosition);
+    };
+
+    // Subscribe to the 'popstate' event to handle browser back/forward navigation
+    window.addEventListener('popstate', handleScrollRestoration);
+
+    return () => {
+      // Unsubscribe from the 'popstate' event when the component unmounts
+      window.removeEventListener('popstate', handleScrollRestoration);
+    };
+  }, [scrollPosition]);
+
+  // Fetch images when the component mounts
+  useEffect(() => {
+    // Subscribe to the 'popstate' event to handle browser back/forward navigation
+    const handlePopstate = () => {
+      window.scrollTo(0, scrollPosition);
+    };
+
+    window.addEventListener('popstate', handlePopstate);
+
+    // Scroll to top when the component mounts
+    window.scrollTo(0, 0);
+
+    // Set the scroll position from localStorage
+    const storedScrollPosition = localStorage.getItem('scrollPosition');
+    if (storedScrollPosition) {
+      setScrollPosition(parseInt(storedScrollPosition, 10));
+    }
+
+    // Store the scroll position when navigating away
+    const handleBeforeUnload = () => {
+      localStorage.setItem('scrollPosition', window.scrollY.toString());
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      // Unsubscribe from the 'popstate' and 'beforeunload' events when the component unmounts
+      window.removeEventListener('popstate', handlePopstate);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
 
   return (
     <div
@@ -282,34 +340,40 @@ const HomeContent = () => {
             Skicka bild
           </CButton>
         </CForm>
-        {filteredImage.map((element, index) => (
-          <div className="col-lg-3 mx-4 col-md-6 mb-2 text-center" key={index}>
-            <div className="card-body">
-              <div className="image-container">
-                <div className="relative">
-                  <Link to={`/detailOfImage/${element._id}`}>
-                    <LazyLoadImage
-                      key="img"
-                      className="rounded-1 img-fluid image-zoom-on-hover relative"
-                      src={`https://trafikbilderbucket.s3.amazonaws.com/images/${element.name}`}
-                      alt="Image related to categories"
-                      effect="blur"
-                      placeholderSrc={`https://trafikbilderbucket.s3.amazonaws.com/images/${element.name}`}
-                      style={{
-                        width: '300px',  // Default width for mobile
-                        height: '250px', // Default height for mobile
-                        maxWidth: '300px', // Max width for desktop
-                        maxHeight: '300px', // Max height for desktop
-                        margin: '0 auto', // Center the image horizontally
-                        cursor: 'pointer'
-                      }}
-                    />
-                  </Link>
+        {filteredImage.length === 0 ? (
+          <div className="col-lg-12 text-center mt-5 mb-5">
+            <h4>No images in this category</h4>
+          </div>
+        ) : (
+          filteredImage.map((element, index) => (
+            <div className="col-lg-3 mx-4 col-md-6 mb-2 text-center" key={index}>
+              <div className="card-body">
+                <div className="image-container">
+                  <div className="relative">
+                    <Link to={`/detailOfImage/${element._id}`}>
+                      <LazyLoadImage
+                        key="img"
+                        className="rounded-1 img-fluid image-zoom-on-hover relative"
+                        src={`https://trafikbilderbucket.s3.amazonaws.com/images/${element.name}`}
+                        alt="Image related to categories"
+                        effect="blur"
+                        placeholderSrc={`https://trafikbilderbucket.s3.amazonaws.com/images/${element.name}`}
+                        style={{
+                          width: '300px',  // Default width for mobile
+                          height: '250px', // Default height for mobile
+                          maxWidth: '300px', // Max width for desktop
+                          maxHeight: '300px', // Max height for desktop
+                          margin: '0 auto', // Center the image horizontally
+                          cursor: 'pointer'
+                        }}
+                      />
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div >
   );

@@ -3,6 +3,8 @@ import React, { Component, Suspense } from 'react'
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
 import jwt_decode from 'jwt-decode';
 import axios from 'axios';
+import VideosCategoryContext, { VideosCategoryProvider } from './views/frontPages/VideoContext/VideosCategoryContext'; // Update the path
+import CategoryContext, { CategoryProvider } from './views/frontPages/contexts/CategoryContext'; // Update the path
 import './scss/style.scss'
 import './App.css';
 
@@ -63,27 +65,32 @@ class App extends Component {
         validRole = true;
       }
     }
+
     return (
       <>
         <BrowserRouter>
           <Suspense fallback={loading}>
-            <Routes>
-              <Route path="/home" name="Home Page" element={validRole ? <Home /> : <Navigate to="/auth/login" replace />} exact={true} />
-              <Route path="/videos" name="Videos Page" element={validRole ? <Videos /> : <Navigate to="/auth/login" replace />} exact={true} />
-              <Route path="/about" name="About Page" element={validRole ? <About /> : <Navigate to="/auth/login" replace />} exact={true} />
-              <Route path="/contactUs" name="Contact Page" element={validRole ? <Contact /> : <Navigate to="/auth/login" replace />} exact={true} />
-              <Route path="/videos" name="Videos Page" element={validRole ? <Videos /> : <Navigate to="/auth/login" replace />} exact={true} />
-              <Route path="/404" name="Page 404" element={validRole ? <Home /> : <Navigate to="/auth/login" replace />} exact={true} />
-              <Route path="/500" name="Page 500" element={validRole ? <Home /> : <Navigate to="/auth/login" replace />} exact={true} />
-              <Route path="/customer/dashboard" name="All Pakages" element={validRole ? <AllPakages /> : <Navigate to="/auth/login" replace />} exact={true} />
-              <Route path="/detailOfImage/:id" name="Detail Of Image" element={validRole ? <DetailOfImage /> : <Navigate to="/auth/login" replace />} exact={true} />
-              <Route path="/detailOfVideo/:id" name="Detail Of Video" element={validRole ? <DetailOfVideo /> : <Navigate to="/auth/login" replace />} exact={true} />
-              <Route path="/auth/login" name="Login Page" element={<Login />} />
-              <Route path="/auth/signup" name="Register Page" element={<Register />} />
-              <Route path="*" element={token ? <DefaultLayout /> : <Navigate to="/auth/login" replace />} />
-              <Route path="/" element={validRole ? <Home /> : <Navigate to="/auth/login" replace />} />
-              <Route path="/customer/changePassword/:id" name="Change Password" element={validRole ? <PasswordChange /> : <Navigate to="/auth/login" replace />} exact={true} />
-            </Routes>
+            <VideosCategoryProvider>
+              <CategoryProvider>
+                <Routes>
+                  <Route path="/home" name="Home Page" element={validRole ? <Home /> : <Navigate to="/auth/login" replace />} exact={true} />
+                  <Route path="/videos" name="Videos Page" element={validRole ? <Videos /> : <Navigate to="/auth/login" replace />} exact={true} />
+                  <Route path="/about" name="About Page" element={validRole ? <About /> : <Navigate to="/auth/login" replace />} exact={true} />
+                  <Route path="/contactUs" name="Contact Page" element={validRole ? <Contact /> : <Navigate to="/auth/login" replace />} exact={true} />
+                  <Route path="/videos" name="Videos Page" element={validRole ? <Videos /> : <Navigate to="/auth/login" replace />} exact={true} />
+                  <Route path="/404" name="Page 404" element={validRole ? <Home /> : <Navigate to="/auth/login" replace />} exact={true} />
+                  <Route path="/500" name="Page 500" element={validRole ? <Home /> : <Navigate to="/auth/login" replace />} exact={true} />
+                  <Route path="/customer/dashboard" name="All Pakages" element={validRole ? <AllPakages /> : <Navigate to="/auth/login" replace />} exact={true} />
+                  <Route path="/detailOfImage/:id" name="Detail Of Image" element={validRole ? <DetailOfImage /> : <Navigate to="/auth/login" replace />} exact={true} />
+                  <Route path="/detailOfVideo/:id" name="Detail Of Video" element={validRole ? <DetailOfVideo /> : <Navigate to="/auth/login" replace />} exact={true} />
+                  <Route path="/auth/login" name="Login Page" element={<Login />} />
+                  <Route path="/auth/signup" name="Register Page" element={<Register />} />
+                  <Route path="*" element={token ? <DefaultLayout /> : <Navigate to="/auth/login" replace />} />
+                  <Route path="/" element={validRole ? <Home /> : <Navigate to="/auth/login" replace />} />
+                  <Route path="/customer/changePassword/:id" name="Change Password" element={validRole ? <PasswordChange /> : <Navigate to="/auth/login" replace />} exact={true} />
+                </Routes>
+              </CategoryProvider>
+            </VideosCategoryProvider>
           </Suspense>
         </BrowserRouter>
       </>

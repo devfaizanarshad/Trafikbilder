@@ -148,20 +148,28 @@ Router.addVideo = async (req, res) => {
 Router.listOfFrontVideos = async (req, res) => {
     try {
         // find user pakage
-        console.log("1");
-        const { token } = req.body;
+        const { token, category } = req.body;
         const decodedToken = jwt.verify(token, JWT_SECRET);
         const userID = decodedToken.id;
         const user = await Users.findById(userID);
-        console.log("User: " + user);
         const userPakageCategories = await Subscriptions.findById(user.subscriptionPakage);
-        console.log("userPakageCategories: " + userPakageCategories);
+
         // pakage categories
-        const videoCategories = userPakageCategories.categories;
+        let videoCategories = userPakageCategories.categories;
+        console.log("Video 1: ", videoCategories);
+        // Selected Category
+        if (videoCategories) {
+            if (category !== null) {
+                videoCategories = [category];
+                console.log("Video 2: ", videoCategories);
+            }
+            else {
+                console.log("Category not exist");
+            }
+        }
 
         // Find images whose categories match any in imageCategories
         const VideosData = await Videos.find({ categories: { $in: videoCategories } });
-        console.log("VideosData: " + VideosData);
 
         // Create a list to store Videos with category names
         const VideosWithCategoryNames = await Promise.all(VideosData.map(async (Video) => {

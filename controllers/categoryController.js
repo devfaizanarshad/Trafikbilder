@@ -3,7 +3,10 @@ const Router = express.Router();
 const Categories = require('../models/Categories');
 const Images = require('../models/Images');
 const Videos = require('../models/Videos');
+const Users = require('../models/Users');
 const Subscriptions = require('../models/Subscriptions');
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = "SecurityInsure";
 
 Router.allCategoriesNames = async (req, res) => {
     try {
@@ -40,7 +43,7 @@ Router.listOfCategories = async (req, res) => {
     try {
         // Fetch all categories
         const categoriesData = await Categories.find();
-        
+
         // Calculate the numberOfImages for each category
         const categoriesWithNumberOfImages = await Promise.all(
             categoriesData.map(async (category) => {
@@ -166,18 +169,36 @@ Router.deleteCategory = async (req, res) => {
     }
 };
 
-// Router.deleteCategory = async (req, res) => {
-//     try {
-//         const checkCategory = await Categories.findById(req.params.id);
-//         if (checkCategory) {
-//             await Categories.findByIdAndRemove(req.params.id);
-//             res.json({ status: 200, message: "Delete Successfully" });
-//         } else {
-//             res.json({ status: 400, message: "Category not found" });
-//         }
-//     } catch (error) {
-//         res.json({ status: 500, error: 'An error occurred while retrieving the records.' });
-//     }
-// };
+
+Router.CategoriesOfPakages = async (req, res) => {
+    try {
+        // find user pakage
+        const { token } = req.body;
+        const decodedToken = jwt.verify(token, JWT_SECRET);
+        const userID = decodedToken.id;
+        const user = await Users.findById(userID);
+        const userPakageCategories = await Subscriptions.findById(user.subscriptionPakage);
+
+        const categoriesData = await Categories.find({ _id: { $in: userPakageCategories.categories } });
+
+        // Calculate the numberOfImages for each category
+        const categoriesWithNumberOfImages = await Promise.all(
+            categoriesData.map(async (category) => {
+                // Find the images that belong to the category by category ID
+                const numberOfImages = await Images.countDocuments({ categories: category._id });
+                // Update the category with the numberOfImages attribute
+                return {
+                    ...category.toObject(),
+                    numberOfImages,
+                };
+            })
+        );
+
+        res.json({ status: 200, data: categoriesWithNumberOfImages });
+    } catch (error) {
+        res.json({ status: 500, error: 'An error occurred while retrieving the records.' });
+    }
+};
+
 
 module.exports = Router;

@@ -1,16 +1,17 @@
 /* eslint-disable prettier/prettier */
 // export default Sidebar;
 import React, { useState, useEffect, useContext } from "react";
-import CategoryContext from '../contexts/CategoryContext';
+import VideosCategoryContext from '../VideoContext/VideosCategoryContext';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 const Sidebar = () => {
-    const { setCategory } = useContext(CategoryContext);
+    const { setCategory } = useContext(VideosCategoryContext);
     const [categories, setCategories] = useState([]);
 
     const handleCategoryClick = (category) => {
         setCategory(category);
+        console.log("Clicked Category:", category);
         // You can add API calls here if needed
     };
 
@@ -64,7 +65,7 @@ const Sidebar = () => {
                                     }}
                                 >
                                     <Link
-                                        to="/"
+                                        to="/videos"
                                         className="text-decoration-none text-black fw-bold"
                                         onClick={() => handleCategoryClick(category._id)}
                                     >

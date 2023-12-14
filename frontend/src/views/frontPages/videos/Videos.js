@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import React from "react";
 import Header from "../navbar/Navbar";
-import Sidebar from "../sidebar/Sidebar";
+import Sidebar from "../sidebarVideos/VideosSidebar";
 import ListOfVideos from "../videoContent/ListOfVideos";
 import Footer from "../footer/Footer";
 

@@ -16,5 +16,6 @@ router.get('/allCategoriesNames', categoryController.allCategoriesNames);
 router.delete('/deleteCategory/:id', categoryController.deleteCategory);
 router.get('/getCategory/:id', categoryController.getCategory);
 router.put('/updateCategory/:id', categoryController.updateCategory);
+router.post('/CategoriesOfPakages', categoryController.CategoriesOfPakages);
 
 module.exports = router;
