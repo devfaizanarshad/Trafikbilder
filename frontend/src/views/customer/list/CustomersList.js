@@ -95,7 +95,7 @@ const CustomersList = () => {
             if (result.isConfirmed) {
                 axios.delete(`${process.env.REACT_APP_API_BASE_URL}/user/deleteCustomer/${id}`)
                     .then((response) => {
-                        
+
                         if (response.status === 200) {
                             // Update the subscription list without refreshing
                             setCustomer((prevCustomers) => prevCustomers.filter((element) => element._id !== id))
@@ -137,6 +137,38 @@ const CustomersList = () => {
         });
     };
 
+    const adminChangeLoginDevices = (id) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You are about to change the customers login devices to 0.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, change it!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios.put(`${process.env.REACT_APP_API_BASE_URL}/user/adminChangeLoginDevices/${id}`)
+                    .then((response) => {
+                        if (response.status !== 200) {
+                            Swal.fire('Error!', 'Customer login devices reset failed.', 'error');
+                        }
+                        if (response.status === 200) {
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: response.data.message,
+                            });
+                        }
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                        Swal.fire('Error!', 'Customer login devices reset failed.', 'error');
+                    });
+            }
+        });
+    };
 
     return (
         <div className="container mt-4">
@@ -159,11 +191,12 @@ const CustomersList = () => {
                         <table className="table table-striped table-bordered">
                             <thead>
                                 <tr>
-                                    <th className="text-center" style={{ width: "15%" }}>Sr#</th>
-                                    <th className="text-center" style={{ width: "17%" }}>Name</th>
-                                    <th className="text-center" style={{ width: "18%" }}>Email</th>
-                                    <th className="text-center" style={{ width: "15%" }}>Status</th>
-                                    <th className="text-center" style={{ width: "15%" }}>Password</th>
+                                    <th className="text-center" style={{ width: "10%" }}>Sr#</th>
+                                    <th className="text-center" style={{ width: "15%" }}>Name</th>
+                                    <th className="text-center" style={{ width: "15%" }}>Email</th>
+                                    <th className="text-center" style={{ width: "14%" }}>Status</th>
+                                    <th className="text-center" style={{ width: "14%" }}>Password</th>
+                                    <th className="text-center" style={{ width: "15%" }}>Login Devices</th>
                                     <th className="text-center" style={{ width: "20%" }}>Actions</th>
                                 </tr>
                             </thead>
@@ -191,6 +224,14 @@ const CustomersList = () => {
                                             <button
                                                 onClick={() => handlePasswordReset(element._id)}
                                                 className="btn btn-danger btn-sm text-white mb-1"
+                                            >
+                                                Reset
+                                            </button>
+                                        </td>
+                                        <td className="text-center">
+                                            <button
+                                                onClick={() => adminChangeLoginDevices(element._id)}
+                                                className="btn btn-warning btn-sm text-white mb-1"
                                             >
                                                 Reset
                                             </button>

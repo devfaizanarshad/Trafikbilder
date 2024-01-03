@@ -12,6 +12,7 @@ router.post('/changeCustomerPassword', userController.changeCustomerPassword);
 router.get('/listOfCustomers', userController.listOfCustomers);
 router.delete('/deleteCustomer/:id', userController.deleteCustomer);
 router.put('/changeStatus/:id', userController.changeStatus);
+router.put('/adminChangeLoginDevices/:id', userController.adminChangeLoginDevices);
 router.put('/resetPassword/:id', userController.resetPassword);
 
 module.exports = router;

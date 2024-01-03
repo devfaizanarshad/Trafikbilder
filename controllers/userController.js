@@ -123,8 +123,7 @@ Router.login = async (req, res) => {
                                 email: user.email,
                                 role: user.role,
                             },
-                            JWT_SECRET,
-                            { expiresIn: '24h' }
+                            JWT_SECRET
                         );
                         res.json({ status: 200, message: "Login Successful", data: user, token: token });
                     } else {
@@ -271,6 +270,24 @@ Router.changeStatus = async (req, res) => {
             updateState.status = req.body.status;
             updateState.save();
             res.json({ status: 200, message: "Update Status Successfully" });
+        }
+        else {
+            res.json({ status: 400, message: "Customer not found" });
+        }
+    } catch (error) {
+        res.json({ status: 500, error: 'An error occurred while retrieving the record.' });
+    }
+};
+
+// AdminChangeLoginDevices //
+Router.adminChangeLoginDevices = async (req, res) => {
+    try {
+        const checkCustomer = await Users.findById(req.params.id);
+        if (checkCustomer) {
+            const updateState = await checkCustomer.save();
+            updateState.loginDevice = 0;
+            updateState.save();
+            res.json({ status: 200, message: "Login Device Status Change" });
         }
         else {
             res.json({ status: 400, message: "Customer not found" });
