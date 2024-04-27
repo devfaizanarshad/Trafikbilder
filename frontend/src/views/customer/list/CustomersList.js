@@ -1,47 +1,79 @@
 /* eslint-disable prettier/prettier */
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import ReactPaginate from 'react-paginate';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTrash, faEye, faSearch } from '@fortawesome/free-solid-svg-icons'
+import Modal from 'react-modal';
+
+// Modal Styles
+const customStyles = {
+    content: {
+        top: '55%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)',
+        padding: '10px',
+        backgroundColor: 'white',
+        zIndex: 1000,
+        width: '600px',  // Fixed width
+        height: '440px',  // Fixed height
+        overflowY: 'auto',  // Allows scrolling if content overflows
+    },
+    overlay: {
+        backgroundColor: 'rgba(0, 0, 0, 0.75)',
+        zIndex: 999,
+    },
+};
+
+Modal.setAppElement('#root');
 
 const CustomersList = () => {
-    const [customer, setCustomer] = useState([]);
+    const [customers, setCustomers] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [filteredCustomer, setfilteredCustomer] = useState([]); // Initialize with an empty array
     const perPage = 5;
-    const [selectedOptions, setSelectedOptions] = useState({}); // State to manage selected options
+    const [selectedCustomer, setSelectedCustomer] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const fetchCustomers = () => {
-        axios
-            .get(`${process.env.REACT_APP_API_BASE_URL}/user/listOfCustomers`)
-            .then((result) => {
-                if (Array.isArray(result.data.data)) {
-                    setCustomer(result.data.data);
-                    setfilteredCustomer(result.data.data);
-                } else {
-                    console.error("API response is not an array:", result.data.data);
-                }
-            })
-            .catch((error) => {
-                console.error("API error:", error);
-            });
+    const openModal = (customer) => {
+        setSelectedCustomer(customer);
+        setIsModalOpen(true);
     };
 
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedCustomer(null);
+    };
+
+    const fetchCustomers = async () => {
+        try {
+            const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/customer/listOfCustomers`);
+            if (Array.isArray(response.data.data)) {
+                setCustomers(response.data.data);
+                setfilteredCustomer(response.data.data);
+            } else {
+                console.error("API response is not an array:", response.data.data);
+            }
+        } catch (error) {
+            console.error("API error:", error);
+        }
+    };
     useEffect(() => {
         fetchCustomers();
     }, []);
-
-    const handlePageChange = (selectedPage) => {
-        setCurrentPage(selectedPage.selected);
-    };
 
     const handleFilter = (e) => {
         const searchText = e.target.value.toLowerCase();
 
         if (searchText.trim() === '') {
-            setfilteredCustomer(customer); // Reset filtered data to all data
+            setfilteredCustomer(customers); // Reset filtered data to all data
         } else {
-            const filteredData = customer.filter((item) =>
+            const filteredData = customers.filter((item) =>
                 Object.values(item).some((value) =>
                     String(value).toLowerCase().includes(searchText)
                 )
@@ -52,35 +84,17 @@ const CustomersList = () => {
         setCurrentPage(0);
     };
 
+    const handlePageChange = (selectedPage) => {
+        setCurrentPage(selectedPage.selected);
+    };
+
     // Calculate the start and end index for the current page
     const startIndex = currentPage * perPage;
     const endIndex = startIndex + perPage;
 
     // Slice the category array to display items for the current page
     // const displayedCategory = category.slice(startIndex, endIndex);
-    const displayedCustomer = filteredCustomer.slice(startIndex, endIndex)
-
-    const handleChangeStatus = async (id, status) => {
-        // You can now update the selected option in the state or perform other actions.
-        setSelectedOptions({ ...selectedOptions, [id]: status });
-        console.log("Status Change" + status);
-
-        await axios.put(`${process.env.REACT_APP_API_BASE_URL}/user/changeStatus/${id}`, { status: status })
-            .then((response) => {
-                if (response.status === 200) {
-                    console.log("Status Change 2");
-                    fetchCustomers();
-                } else {
-                    console.log("Status Change 3");
-                    Swal.fire('Error!', 'Status changing failed.', 'error');
-                }
-            })
-            .catch((error) => {
-                console.log("Status Change 4");
-                console.error(error);
-                Swal.fire('Error!', 'Status changing failed.', 'error');
-            });
-    };
+    const displayedCustomers = filteredCustomer.slice(startIndex, endIndex)
 
     const handleDelete = (id) => {
         Swal.fire({
@@ -93,12 +107,12 @@ const CustomersList = () => {
             confirmButtonText: 'Yes, delete it!',
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.delete(`${process.env.REACT_APP_API_BASE_URL}/user/deleteCustomer/${id}`)
+                axios.delete(`${process.env.REACT_APP_API_BASE_URL}/customer/deleteCustomer/${id}`)
                     .then((response) => {
-                        
+
                         if (response.status === 200) {
                             // Update the subscription list without refreshing
-                            setCustomer((prevCustomers) => prevCustomers.filter((element) => element._id !== id))
+                            setCustomers((prevCustomers) => prevCustomers.filter((element) => element._id !== id))
                             setfilteredCustomer((prevCustomers) => prevCustomers.filter((element) => element._id !== id));
                         } else {
                             Swal.fire('Error!', 'Customer deletion failed.', 'error');
@@ -112,124 +126,163 @@ const CustomersList = () => {
         });
     };
 
-    const handlePasswordReset = (id) => {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: 'You are about to change the customers password temporarily.',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, change it!',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                axios.put(`${process.env.REACT_APP_API_BASE_URL}/user/resetPassword/${id}`)
-                    .then((response) => {
-                        if (response.status !== 200) {
-                            Swal.fire('Error!', 'Customer reset password failed.', 'error');
-                        }
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                        Swal.fire('Error!', 'Customer deletion failed.', 'error');
-                    });
-            }
-        });
-    };
-
-
     return (
         <div className="container mt-4">
             <div className="row">
-                <div className="col-md-12">
-                    <div className="row">
-                        <div className="col-md-12 d-flex justify-content-between align-items-center">
-                            <h2 className="mb-3">Customers List</h2>
-                            <div className="mb-3">
-                                <input
-                                    type="text"
-                                    placeholder="Search Results"
-                                    onChange={handleFilter}
-                                    className="form-control rounded-pill w-76"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="table-responsive">
-                        <table className="table table-striped table-bordered">
-                            <thead>
-                                <tr>
-                                    <th className="text-center" style={{ width: "15%" }}>Sr#</th>
-                                    <th className="text-center" style={{ width: "17%" }}>Name</th>
-                                    <th className="text-center" style={{ width: "18%" }}>Email</th>
-                                    <th className="text-center" style={{ width: "15%" }}>Status</th>
-                                    <th className="text-center" style={{ width: "15%" }}>Password</th>
-                                    <th className="text-center" style={{ width: "20%" }}>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {displayedCustomer.map((element, index) => (
-                                    <tr key={element._id}>
-                                        <td className="text-center">{index + 1}</td>
-                                        <td className="text-center">{element.name}</td>
-                                        <td className="text-center">{element.email}</td>
-                                        <td className="text-center">
-                                            <div className="dropdown">
-                                                <select
-                                                    value={selectedOptions[element._id] || element.status}
-                                                    style={{ backgroundColor: "#D4AF37", color: "#fff", borderColor: "#fff" }}
-                                                    className='p-1'
-                                                    onChange={(e) => handleChangeStatus(element._id, e.target.value)}
-                                                >
-                                                    <option value="Verify">Verify</option>
-                                                    <option value="Pause">Pause</option>
-                                                    <option value="Block">Block</option>
-                                                </select>
-                                            </div>
-                                        </td>
-                                        <td className="text-center">
-                                            <button
-                                                onClick={() => handlePasswordReset(element._id)}
-                                                className="btn btn-danger btn-sm text-white mb-1"
-                                            >
-                                                Reset
-                                            </button>
-                                        </td>
-                                        <td className="text-center">
-                                            <button
-                                                onClick={() => handleDelete(element._id)}
-                                                className="btn btn-danger btn-sm text-white mb-1"
-                                            >
-                                                Delete
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                    <div className="text-center">
-                        <ReactPaginate
-                            previousLabel={'Previous'}
-                            nextLabel={'Next'}
-                            breakLabel={'...'}
-                            pageCount={Math.ceil(customer.length / perPage)}
-                            marginPagesDisplayed={2}
-                            pageRangeDisplayed={3}
-                            onPageChange={handlePageChange}
-                            containerClassName={'pagination justify-content-center'}
-                            activeClassName={'active'}
-                            pageClassName={'page-item'}
-                            pageLinkClassName={'page-link'}
-                            previousClassName={'page-item'}
-                            nextClassName={'page-item'}
-                            previousLinkClassName={'page-link'}
-                            nextLinkClassName={'page-link'}
-                            breakClassName={'page-item'}
-                            breakLinkClassName={'page-link'}
+                <div className="col-md-12 d-flex justify-content-between align-items-center">
+                    <h2 className="text-2xl font-semibold text-[#4B0082]">Customers List</h2>
+                    <div className="mb-3">
+                        <input
+                            type="text"
+                            placeholder="Search Results"
+                            onChange={handleFilter}
+                            className="form-control rounded-pill w-76 h-8"
                         />
                     </div>
                 </div>
+            </div>
+            <div className="table-responsive">
+                <table className="table table-bordered">
+                    <thead>
+                        <tr className="bg-[#4B0082] text-white">
+                            <th className="text-center" style={{ width: "4%", color: "white", backgroundColor: "#4B0082", transition: 'background-color 0.3s, color 0.3s' }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'white'; e.target.style.color = '#4B0082'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = '#4B0082'; e.target.style.color = 'white'; }}>Sr#</th>
+                            <th className="text-center" style={{ width: "12%", color: "white", backgroundColor: "#4B0082", transition: 'background-color 0.3s, color 0.3s' }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'white'; e.target.style.color = '#4B0082'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = '#4B0082'; e.target.style.color = 'white'; }}>Sector</th>
+                            <th className="text-center" style={{ width: "20%", color: "white", backgroundColor: "#4B0082", transition: 'background-color 0.3s, color 0.3s' }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'white'; e.target.style.color = '#4B0082'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = '#4B0082'; e.target.style.color = 'white'; }}>Business Discipline</th>
+                            <th className="text-center" style={{ width: "25%", color: "white", backgroundColor: "#4B0082", transition: 'background-color 0.3s, color 0.3s' }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'white'; e.target.style.color = '#4B0082'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = '#4B0082'; e.target.style.color = 'white'; }}>Service</th>
+                            <th className="text-center" style={{ width: "13%", color: "white", backgroundColor: "#4B0082", transition: 'background-color 0.3s, color 0.3s' }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'white'; e.target.style.color = '#4B0082'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = '#4B0082'; e.target.style.color = 'white'; }}>Email</th>
+                            <th className="text-center" style={{ width: "10%", color: "white", backgroundColor: "#4B0082", transition: 'background-color 0.3s, color 0.3s' }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'white'; e.target.style.color = '#4B0082'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = '#4B0082'; e.target.style.color = 'white'; }}>Website</th>
+                            <th className="text-center" style={{ width: "15%", color: "white", backgroundColor: "#4B0082", transition: 'background-color 0.3s, color 0.3s' }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'white'; e.target.style.color = '#4B0082'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = '#4B0082'; e.target.style.color = 'white'; }}>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {displayedCustomers && displayedCustomers.map((element, index) => (
+                            <tr key={element._id}>
+                                <td className="text-center">{index + 1}</td>
+                                <td className="text-center">
+                                    {element.sector}
+                                </td>
+                                <td className="text-center">
+                                    {element.bussinessDiscipline}
+                                </td>
+                                <td className="text-center">
+                                    {element.services.map((service, serviceIndex) => (
+                                        <span key={serviceIndex} className="badge me-1" style={{ backgroundColor: "#B22222" }}>
+                                            {service}
+                                        </span>
+                                    ))}
+                                </td>
+                                <td className="text-center">
+                                    {element.customerEmail}
+                                </td>
+                                <td className="text-center">
+                                    {element.website}
+                                </td>
+                                <td className="text-center">
+                                    <FontAwesomeIcon
+                                        icon={faEye}
+                                        onClick={() => openModal(element)}
+                                        className="cursor-pointer text-orange-400 text-lg mx-1"
+                                    />
+                                    {/* <Link to={`/services/add/${element._id}`}>
+                                        <FontAwesomeIcon icon={faWrench} className="cursor-pointer text-blue-500 text-lg mx-1" />
+                                    </Link> */}
+                                    <Link to={`/customer/keywords/list/${element._id}`}>
+                                        <FontAwesomeIcon icon={faSearch} className="cursor-pointer text-green-500 text-lg mx-1" />
+                                    </Link>
+                                    <span
+                                        onClick={() => handleDelete(element._id)}>
+                                        <FontAwesomeIcon icon={faTrash} className="cursor-pointer text-red-600 text-lg mx-1" />
+                                    </span>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+                <Modal
+                    isOpen={isModalOpen}
+                    onRequestClose={closeModal}
+                    style={customStyles}
+                    contentLabel="Customer Details"
+                >
+                    {selectedCustomer && (
+                        <div>
+                            <h3 className="text-2xl font-bold mb-3 text-center">Customer Details</h3>
+                            <table className="w-full border-collapse border border-slate-900">
+                                <tbody>
+                                    <tr>
+                                        <td className='border border-2 border-slate-900'><b>Sector:</b></td>
+                                        <td className='border border-2 border-slate-900'>{selectedCustomer.sector}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className='border border-2 border-slate-900'><b>Business Discipline:</b></td>
+                                        <td className='border border-2 border-slate-900'>{selectedCustomer.bussinessDiscipline}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className='border border-2 border-slate-900'><b>Services:</b></td>
+                                        <td className='border border-2 border-slate-900'>{selectedCustomer.services.join(', ')}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className='border border-2 border-slate-900'><b>Customer Name:</b></td>
+                                        <td className='border border-2 border-slate-900'>{selectedCustomer.customerName}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className='border border-2 border-slate-900'><b>Customer Email:</b></td>
+                                        <td className='border border-2 border-slate-900'>{selectedCustomer.customerEmail}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className='border border-2 border-slate-900'><b>Website:</b></td>
+                                        <td className='border border-2 border-slate-900'>{selectedCustomer.website}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className='border border-2 border-slate-900'><b>Country:</b></td>
+                                        <td className='border border-2 border-slate-900'>{selectedCustomer.country}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className='border border-2 border-slate-900'><b>State:</b></td>
+                                        <td className='border border-2 border-slate-900'>{selectedCustomer.state}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className='border border-2 border-slate-900'><b>Radius in meters:</b></td>
+                                        <td className='border border-2 border-slate-900'>{selectedCustomer.radius}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className='border border-2 border-slate-900'><b>Zip Code:</b></td>
+                                        <td className='border border-2 border-slate-900'>{selectedCustomer.zipCode}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className='border border-2 border-slate-900'><b>Date Created:</b></td>
+                                        <td className='border border-2 border-slate-900'>{selectedCustomer.dateCreated}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <button onClick={closeModal} className="mt-3 p-2 bg-red-500 text-white rounded">
+                                Close
+                            </button>
+                        </div>
+                    )}
+                </Modal>
+
+            </div>
+            <div className="text-center">
+                <ReactPaginate
+                    previousLabel={'Previous'}
+                    nextLabel={'Next'}
+                    breakLabel={'...'}
+                    pageCount={Math.ceil(customers.length / perPage)}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={3}
+                    onPageChange={handlePageChange}
+                    containerClassName={'pagination justify-content-center'}
+                    activeClassName={'active'}
+                    pageClassName={'page-item'}
+                    pageLinkClassName={'page-link'}
+                    previousClassName={'page-item'}
+                    nextClassName={'page-item'}
+                    previousLinkClassName={'page-link'}
+                    nextLinkClassName={'page-link'}
+                    breakClassName={'page-item'}
+                    breakLinkClassName={'page-link'}
+                />
             </div>
         </div>
     );

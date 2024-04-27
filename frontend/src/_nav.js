@@ -1,9 +1,8 @@
+/* eslint-disable prettier/prettier */
 import React from 'react'
 import CIcon from '@coreui/icons-react'
 import {
   cilDrop,
-  cilImagePlus,
-  cilVideo,
   cilStorage,
   cilShareBoxed,
   cilSpeedometer,
@@ -15,7 +14,7 @@ const _nav = [
   {
     component: CNavItem,
     name: 'Dashboard',
-    to: '/dashboard',
+    to: '/admin/dashboard',
     icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
   },
   {
@@ -26,77 +25,29 @@ const _nav = [
   },
   {
     component: CNavTitle,
-    name: 'Subscriptions',
+    name: 'Sector',
   },
   {
     component: CNavItem,
-    name: 'New Subscription',
-    to: '/subscription/add',
+    name: 'New Sector',
+    to: '/sector/add',
     icon: <CIcon icon={cilShareBoxed} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
-    name: 'List of Subscriptions',
-    to: '/subscription/list',
-    icon: <CIcon icon={cilShareBoxed} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavTitle,
-    name: 'Payment Requests',
-  },
-  {
-    component: CNavItem,
-    name: 'Payment Requests',
-    to: '/paymentRequest/list',
+    name: 'List of Sectors',
+    to: '/sector/list',
     icon: <CIcon icon={cilShareBoxed} customClassName="nav-icon" />,
   },
   {
     component: CNavTitle,
-    name: 'Categories',
+    name: 'Services',
   },
   {
     component: CNavItem,
-    name: 'New Category',
-    to: '/category/add',
+    name: 'List of Services',
+    to: '/services/list',
     icon: <CIcon icon={cilStorage} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
-    name: 'List of Categories',
-    to: '/category/list',
-    icon: <CIcon icon={cilStorage} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavTitle,
-    name: 'Images',
-  },
-  {
-    component: CNavItem,
-    name: 'New Image',
-    to: '/image/add',
-    icon: <CIcon icon={cilImagePlus} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
-    name: 'List of Images',
-    to: '/image/list',
-    icon: <CIcon icon={cilImagePlus} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavTitle,
-    name: 'Videos',
-  },
-  {
-    component: CNavItem,
-    name: 'New Video',
-    to: '/video/add',
-    icon: <CIcon icon={cilVideo} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
-    name: 'List of Videos',
-    to: '/video/list',
-    icon: <CIcon icon={cilVideo} customClassName="nav-icon" />,
   },
 ]
 

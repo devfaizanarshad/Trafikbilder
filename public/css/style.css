@@ -35,7 +35,7 @@
 }
 
 .btn.btn-primary {
-    color: #FFFFFF;
+    color: "#4B0082";
 }
 
 .btn-square {
@@ -124,7 +124,7 @@
 /*** Navbar ***/
 .sidebar .navbar .navbar-nav .nav-link {
     padding: 7px 20px;
-    color: var(--dark);
+    color: "#4B0082";
     font-weight: 500;
     border-left: 3px solid var(--light);
     border-radius: 0 30px 30px 0;
@@ -133,9 +133,9 @@
 
 .sidebar .navbar .navbar-nav .nav-link:hover,
 .sidebar .navbar .navbar-nav .nav-link.active {
-    color: var(--primary);
-    background: #FFFFFF;
-    border-color: var(--primary);
+    color: "#4B0082";
+    background: "#4B0082";
+    border-color: "#4B0082";
 }
 
 .sidebar .navbar .navbar-nav .nav-link i {
@@ -176,13 +176,13 @@
 .content .navbar .navbar-nav .nav-link {
     margin-left: 25px;
     padding: 12px 0;
-    color: var(--dark);
+    color: "#4B0082";
     outline: none;
 }
 
 .content .navbar .navbar-nav .nav-link:hover,
 .content .navbar .navbar-nav .nav-link.active {
-    color: var(--primary);
+    color: "#4B0082";
 }
 
 .content .navbar .sidebar-toggler,
@@ -241,7 +241,7 @@
 }
 
 .bootstrap-datetimepicker-widget table td.today::before {
-    border-bottom-color: var(--primary);
+    border-bottom-color: "#4B0082";
 }
 
 
@@ -273,5 +273,5 @@
 
 .testimonial-carousel .owl-dot.active {
     background: var(--dark);
-    border-color: var(--primary);
+    border-color: "#4B0082";
 }

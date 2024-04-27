@@ -19,7 +19,6 @@ import {
   CTableRow,
 } from '@coreui/react'
 import { CChartLine } from '@coreui/react-chartjs'
-import { getStyle, hexToRgba } from '@coreui/utils'
 import CIcon from '@coreui/icons-react'
 import {
   cibCcAmex,
@@ -51,18 +50,15 @@ import avatar4 from 'src/assets/images/avatars/4.jpg'
 import avatar5 from 'src/assets/images/avatars/5.jpg'
 import avatar6 from 'src/assets/images/avatars/6.jpg'
 
-import WidgetsBrand from '../widgets/WidgetsBrand'
-import WidgetsDropdown from '../widgets/WidgetsDropdown'
-
 const Dashboard = () => {
   const random = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
 
   const progressExample = [
-    { title: 'Visits', value: '29.703 Users', percent: 40, color: 'success' },
-    { title: 'Unique', value: '24.093 Users', percent: 20, color: 'info' },
-    { title: 'Pageviews', value: '78.706 Views', percent: 60, color: 'warning' },
-    { title: 'New Users', value: '22.123 Users', percent: 80, color: 'danger' },
-    { title: 'Bounce Rate', value: 'Average Rate', percent: 40.15, color: 'primary' },
+    { title: 'Visits', value: '29.703 Users', percent: 40, color: '#4B0082' },
+    { title: 'Unique', value: '24.093 Users', percent: 20, color: '#4B0082' },
+    { title: 'Pageviews', value: '78.706 Views', percent: 60, color: '#4B0082' },
+    { title: 'New Users', value: '22.123 Users', percent: 80, color: '#4B0082' },
+    { title: 'Bounce Rate', value: 'Average Rate', percent: 40.15, color: '#4B0082' },
   ]
 
   const progressGroupExample1 = [
@@ -99,7 +95,7 @@ const Dashboard = () => {
       usage: {
         value: 50,
         period: 'Jun 11, 2021 - Jul 10, 2021',
-        color: 'success',
+        color: '#4B0082',
       },
       payment: { name: 'Mastercard', icon: cibCcMastercard },
       activity: '10 sec ago',
@@ -115,7 +111,7 @@ const Dashboard = () => {
       usage: {
         value: 22,
         period: 'Jun 11, 2021 - Jul 10, 2021',
-        color: 'info',
+        color: '#4B0082',
       },
       payment: { name: 'Visa', icon: cibCcVisa },
       activity: '5 minutes ago',
@@ -127,7 +123,7 @@ const Dashboard = () => {
       usage: {
         value: 74,
         period: 'Jun 11, 2021 - Jul 10, 2021',
-        color: 'warning',
+        color: '#4B0082',
       },
       payment: { name: 'Stripe', icon: cibCcStripe },
       activity: '1 hour ago',
@@ -139,7 +135,7 @@ const Dashboard = () => {
       usage: {
         value: 98,
         period: 'Jun 11, 2021 - Jul 10, 2021',
-        color: 'danger',
+        color: '#4B0082',
       },
       payment: { name: 'PayPal', icon: cibCcPaypal },
       activity: 'Last month',
@@ -155,7 +151,7 @@ const Dashboard = () => {
       usage: {
         value: 22,
         period: 'Jun 11, 2021 - Jul 10, 2021',
-        color: 'primary',
+        color: '#4B0082',
       },
       payment: { name: 'Google Wallet', icon: cibCcApplePay },
       activity: 'Last week',
@@ -171,7 +167,7 @@ const Dashboard = () => {
       usage: {
         value: 43,
         period: 'Jun 11, 2021 - Jul 10, 2021',
-        color: 'success',
+        color: '#4B0082',
       },
       payment: { name: 'Amex', icon: cibCcAmex },
       activity: 'Last week',
@@ -180,7 +176,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <WidgetsDropdown />
+      {/* <WidgetsDropdown /> */}
       <CCard className="mb-4">
         <CCardBody>
           <CRow>
@@ -191,7 +187,7 @@ const Dashboard = () => {
               <div className="small text-medium-emphasis">January - July 2021</div>
             </CCol>
             <CCol sm={7} className="d-none d-md-block">
-              <CButton color="primary" className="float-end">
+              <CButton color="#4B0082" className="float-end">
                 <CIcon icon={cilCloudDownload} />
               </CButton>
               <CButtonGroup className="float-end me-3">
@@ -215,9 +211,9 @@ const Dashboard = () => {
               datasets: [
                 {
                   label: 'My First dataset',
-                  backgroundColor: hexToRgba(getStyle('--cui-info'), 10),
-                  borderColor: getStyle('--cui-info'),
-                  pointHoverBackgroundColor: getStyle('--cui-info'),
+                  backgroundColor: '#4B0082',
+                  borderColor: '#4B0082',
+                  pointHoverBackgroundColor: '#4B0082',
                   borderWidth: 2,
                   data: [
                     random(50, 200),
@@ -232,9 +228,9 @@ const Dashboard = () => {
                 },
                 {
                   label: 'My Second dataset',
-                  backgroundColor: 'transparent',
-                  borderColor: getStyle('--cui-success'),
-                  pointHoverBackgroundColor: getStyle('--cui-success'),
+                  backgroundColor: '#4B0082',
+                  borderColor: '#4B0082',
+                  pointHoverBackgroundColor: '#4B0082',
                   borderWidth: 2,
                   data: [
                     random(50, 200),
@@ -248,9 +244,9 @@ const Dashboard = () => {
                 },
                 {
                   label: 'My Third dataset',
-                  backgroundColor: 'transparent',
-                  borderColor: getStyle('--cui-danger'),
-                  pointHoverBackgroundColor: getStyle('--cui-danger'),
+                  backgroundColor: '#4B0082',
+                  borderColor: '#4B0082',
+                  pointHoverBackgroundColor: '#4B0082',
                   borderWidth: 1,
                   borderDash: [8, 5],
                   data: [65, 65, 65, 65, 65, 65, 65],
@@ -308,7 +304,7 @@ const Dashboard = () => {
         </CCardFooter>
       </CCard>
 
-      <WidgetsBrand withCharts />
+      {/* <WidgetsBrand withCharts /> */}
 
       <CRow>
         <CCol xs>
@@ -339,8 +335,8 @@ const Dashboard = () => {
                         <span className="text-medium-emphasis small">{item.title}</span>
                       </div>
                       <div className="progress-group-bars">
-                        <CProgress thin color="info" value={item.value1} />
-                        <CProgress thin color="danger" value={item.value2} />
+                        <CProgress thin color="#4B0082" value={item.value1} />
+                        <CProgress thin color="#4B0082" value={item.value2} />
                       </div>
                     </div>
                   ))}
@@ -372,7 +368,7 @@ const Dashboard = () => {
                         <span className="ms-auto fw-semibold">{item.value}%</span>
                       </div>
                       <div className="progress-group-bars">
-                        <CProgress thin color="warning" value={item.value} />
+                        <CProgress thin color="#4B0082" value={item.value} />
                       </div>
                     </div>
                   ))}
@@ -390,7 +386,7 @@ const Dashboard = () => {
                         </span>
                       </div>
                       <div className="progress-group-bars">
-                        <CProgress thin color="success" value={item.percent} />
+                        <CProgress thin color="#4B0082" value={item.percent} />
                       </div>
                     </div>
                   ))}
@@ -400,7 +396,7 @@ const Dashboard = () => {
               <br />
 
               <CTable align="middle" className="mb-0 border" hover responsive>
-                <CTableHead color="light">
+                <CTableHead color="#4B0082">
                   <CTableRow>
                     <CTableHeaderCell className="text-center">
                       <CIcon icon={cilPeople} />

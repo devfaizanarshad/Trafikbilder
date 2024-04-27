@@ -1,3 +1,7 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
 .App {
     text-align: center;
 }
@@ -14,18 +18,18 @@
 }
 
 .App-header {
-    background-color: #282c34;
+    background-color: #4B0082;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     font-size: calc(10px + 2vmin);
-    color: white;
+    color: #4B0082;
 }
 
 .App-link {
-    color: #61dafb;
+    color: #4B0082;
 }
 
 @keyframes App-logo-spin {
@@ -49,7 +53,7 @@
 }
 
 .custom-button {
-    background-color: #f8f8f8;
+    background-color: #4B0082;
     /* Default background color */
     transition: background-color 0.3s;
 
@@ -57,10 +61,10 @@
 }
 
 .custom-button:hover {
-    background-color: #D4AF37;
+    background-color: #4B0082;
     color: white;
     font-weight: bold;
-    border: 1px solid black;
+    border: 1px solid #4B0082;
 }
 
 /* custom btn styles */
@@ -69,36 +73,36 @@
 }
 
 .customBtn:hover {
-    color: white;
+    color: #4B0082;
 }
 
 /* style of icons (size and color) whose i adjust during development  */
 
 .custom-icon1 {
-    color: blue;
+    color: #4B0082;
 }
 
 .custom-icon2 {
-    color: red;
+    color: #4B0082;
 }
 
 .custom-icon3 {
-    color: brown;
+    color: #4B0082;
 }
 
 .nav-link {
-    color: #D4AF37;
+    color: #4B0082;
 }
 
 .nav-link:hover {
-    color: #a3893b;
+    color: #4B0082;
 }
 
 /* style of  search-icon of header */
 .search-icon {
-    background: #D4AF37
+    background: #4B0082
 }
 
 .search-icon:hover {
-    background: #887b52;
+    background: #4B0082;
 }

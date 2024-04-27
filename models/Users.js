@@ -17,25 +17,9 @@ const userSchema = new Schema({
         type: Number,
         default: 1, // 1 for customers and 0 for admin
     },
-    subscriptionPakage: {
-        type: String,
-        default: "No Pakage"
-    },
     status: {
         type: String,
         default: "Verify",
-    },
-    pakageAllocationDate: {
-        type: Date, // Change the type to Date
-        default: Date.now // Set the default value to the current date
-    },
-    // paymentStatus: {
-    //     type: String,
-    //     default: "Unpaid",
-    // },
-    loginDevice: {
-        type: Number,
-        default: 0,
     },
     dateCreated: {
         type: Date, // Change the type to Date
