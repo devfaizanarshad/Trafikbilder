@@ -10,7 +10,7 @@ const DocsCallout = (props) => {
   const _href = `https://coreui.io/react/docs/${href}`
 
   return (
-    <CCallout color="#4B0082" className="bg-white">
+    <CCallout color="info" className="bg-white">
       {content
         ? content
         : `A React ${name} component ${

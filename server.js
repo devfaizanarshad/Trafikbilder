@@ -3,12 +3,14 @@ const mongoose = require("mongoose");
 require('dotenv').config();
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const categories = require("./routes/categoryRoutes");
 const users = require("./routes/userRoutes");
-const sectorRoutes = require("./routes/sectorRoutes");
-const servicesRoutes = require("./routes/servicesRoutes");
-const customersRoutes = require("./routes/customersRoutes");
+const images = require("./routes/imageRoutes");
+const subscriptions = require("./routes/subscriptionRoutes");
+const videoRoutes = require("./routes/videoRoutes");
+const paymentRequestsRoutes = require("./routes/paymentRequestsRoutes");
 
-const MongoUrl = "mongodb+srv://amirrafay135:XyImBf1YGtzacNcK@blogcluster.drny97g.mongodb.net/DigitalSearch?retryWrites=true&w=majority";
+const MongoUrl = "mongodb+srv://amirrafay135:XyImBf1YGtzacNcK@blogcluster.drny97g.mongodb.net/Trafikbilder?retryWrites=true&w=majority";
 
 const app = express();
 const port = 4000;
@@ -35,10 +37,12 @@ app.use(bodyParser.json());
 
 // Run Route Files APIs
 
+app.use("/category", categories);
 app.use("/user", users);
-app.use("/sector", sectorRoutes);
-app.use("/service", servicesRoutes);
-app.use("/customer", customersRoutes);
+app.use("/image", images);
+app.use("/subscription", subscriptions);
+app.use("/video", videoRoutes);
+app.use("/paymentRequest", paymentRequestsRoutes);
 
 // Start the server
 app.listen(port, () => {

@@ -48,8 +48,8 @@ export const logoNegative = [
 
     <g style="fill:#fff;">
       <g>
-        <image x="2" y="0" width="130" height="140" xlink:href="${logoImage}" />
-        <text x="160" y="100" font-size="72" fill="#fff">Digital Search</text>
+        <image x="20" y="0" width="140" height="150" xlink:href="${logoImage}" />
+        <text x="200" y="100" font-size="80" fill="#fff">Trafikbilder</text>
       </g>
     </g>
   </g>
