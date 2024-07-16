@@ -10,7 +10,7 @@ const subscriptions = require("./routes/subscriptionRoutes");
 const videoRoutes = require("./routes/videoRoutes");
 const paymentRequestsRoutes = require("./routes/paymentRequestsRoutes");
 
-const MongoUrl = "mongodb+srv://amirrafay135:XyImBf1YGtzacNcK@blogcluster.drny97g.mongodb.net/Trafikbilder?retryWrites=true&w=majority";
+const MongoUrl = "mongodb+srv://Faizan:Databasemongo@cluster0.tka8psn.mongodb.net/Trafikbilder?retryWrites=true&w=majority&appName=Cluster0"
 
 const app = express();
 const port = 4000;
